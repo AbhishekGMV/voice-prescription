@@ -8,25 +8,12 @@
 // } from "@clerk/clerk-react";
 // import { BrowserRouter, Route, Routes } from "react-router-dom";
 // import SignIn from "./components/doctor/SignIn";
-import "./styles/homepage.css";
-
-if (!import.meta.env.VITE_REACT_APP_CLERK_PUBLISHABLE_KEY) {
-  throw new Error("Missing Publishable Key");
-}
-
 // const clerkPubKey = import.meta.env.VITE_REACT_APP_CLERK_PUBLISHABLE_KEY;
 
+import Homepage from "./components/Homepage";
+
 function App() {
-  return (
-    <div className="homepage">
-      <img
-        width="100"
-        height="100"
-        src="https://img.icons8.com/ios/100/medical-doctor.png"
-        alt="medical-doctor"
-      />
-    </div>
-  );
+  return <Homepage />;
 }
 
 export default App;
