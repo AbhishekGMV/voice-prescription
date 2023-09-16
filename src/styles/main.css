@@ -1,12 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 html {
-    font-size: 100%;
-    box-sizing: border-box;
+  font-size: 100%;
+  box-sizing: border-box;
+}
+
+body {
+  height: 100vh;
 }
 
 *,
 *::after,
 *::before {
-    margin: 0;
-    padding: 0;
-    box-sizing: inherit;
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
 }
