@@ -1,21 +1,27 @@
 .homepage {
   height: 100vh;
+  max-width: 60%;
+  margin: auto;
+  background-color: #fff;
 }
 
 .card-section {
   display: flex;
   gap: 2rem;
   margin: 2rem;
-  justify-content: center;
+  justify-content: space-around;
 }
 
 .card {
   min-height: 40vh;
-  width: 30%;
-  outline: 1px solid;
+  width: 35%;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin: 1rem;
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
+  background-color: #F3F4F6;
 }
 
 .card__doctor {
@@ -24,4 +30,11 @@
 
 .card__patient {
   background-image: url("https://cdn-icons-png.flaticon.com/512/1430/1430453.png");
+}
+
+.selected {
+  background-color: #007acc;
+  /* Set your desired background color here */
+  color: #fff;
+  /* Text color for the selected card */
 }

@@ -1,46 +1,30 @@
-// import {
-//   ClerkProvider,
-//   SignedOut,
-//   RedirectToSignIn,
-//   SignUp,
-//   SignOutButton,
-//   SignedIn,
-// } from "@clerk/clerk-react";
-// import { BrowserRouter, Route, Routes } from "react-router-dom";
-// import SignIn from "./components/doctor/SignIn";
-// const clerkPubKey = import.meta.env.VITE_REACT_APP_CLERK_PUBLISHABLE_KEY;
-
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Homepage from "./components/Homepage";
+import NotFound from "./components/NotFound";
+// import DoctorLogin from "./components/DoctorLogin";
+// import DoctorRegister from "./components/DoctorRegister";
+// import PatientLogin from "./components/PatientLogin";
+// import PatientRegister from "./components/PatientRegister";
+// import DoctorDashboard from "./components/DoctorDashboard";
+// import PatientDashboard from "./components/PatientDashboard";
 
 function App() {
-  return <Homepage />;
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Homepage />} />
+        {/* <Route path="/doctor/login" element={<DoctorLogin />} />
+        <Route path="/doctor/register" element={<DoctorRegister />} />
+        <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
+
+        <Route path="/patient/login" element={<PatientLogin />} />
+        <Route path="/patient/register" element={<PatientRegister />} />
+        <Route path="/patient/dashboard" element={<PatientDashboard />} /> */}
+
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;
-
-{
-  /* <ClerkProvider publishableKey={clerkPubKey}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/sign-in/*" element={<SignIn />} />
-          <Route
-            path="/sign-up/*"
-            element={<SignUp routing="path" path="/sign-up" />}
-          />
-          <Route
-            path="/protected"
-            element={
-              <>
-                <SignedIn>
-                  <SignOutButton />
-                </SignedIn>
-                <SignedOut>
-                  <RedirectToSignIn />
-                </SignedOut>
-              </>
-            }
-          />
-        </Routes>
-      </BrowserRouter>
-    </ClerkProvider> */
-}
