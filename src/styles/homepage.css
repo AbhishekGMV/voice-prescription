@@ -34,7 +34,5 @@
 
 .selected {
   background-color: #007acc;
-  /* Set your desired background color here */
   color: #fff;
-  /* Text color for the selected card */
 }
