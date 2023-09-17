@@ -15,7 +15,7 @@ function DoctorLogin() {
     };
     checkIfUserSignedIn();
     if (isLoaded && user) navigate("/doctor/dashboard");
-  }, [user, clerk, isLoaded]);
+  }, [user, clerk, isLoaded, navigate]);
 
   return <div>{user && <UserButton />}</div>;
 }
