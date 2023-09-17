@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as constants from "../utils/constants";
 
 import "../styles/homepage.css";
 import { useNavigate } from "react-router-dom";
+import { useClerk } from "@clerk/clerk-react";
 
 interface CardProps {
   isSelected: boolean;
@@ -10,6 +11,10 @@ interface CardProps {
 }
 
 function DoctorCard({ isSelected, onClick }: CardProps) {
+  const clerk = useClerk();
+  useEffect(() => {
+    console.log(clerk?.client?.id);
+  }, []);
   return (
     <div
       className={`card card__doctor ${

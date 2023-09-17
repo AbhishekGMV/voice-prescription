@@ -4,6 +4,7 @@ import NotFound from "./components/NotFound";
 import { ClerkProvider } from "@clerk/clerk-react";
 import DoctorLogin from "./components/doctor/DoctorLogin";
 import PatientLogin from "./components/patient/PatientLogin";
+import DoctorDashboard from "./components/doctor/DoctorDashboard";
 // import DoctorRegister from "./components/DoctorRegister";
 // import PatientRegister from "./components/PatientRegister";
 // import DoctorDashboard from "./components/DoctorDashboard";
@@ -18,7 +19,7 @@ function App() {
           <Route path="/" element={<Homepage />} />
           <Route path="/doctor/login" element={<DoctorLogin />} />
           {/* <Route path="/doctor/register" element={<DoctorRegister />} /> */}
-          {/* <Route path="/doctor/dashboard" element={<DoctorDashboard />} /> */}
+          <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
 
           <Route path="/patient/login" element={<PatientLogin />} />
           {/* <Route path="/patient/register" element={<PatientRegister />} /> */}
