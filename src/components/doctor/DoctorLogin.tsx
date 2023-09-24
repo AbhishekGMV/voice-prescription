@@ -5,7 +5,7 @@ import api from "../../api";
 
 function DoctorLogin() {
   const { user, isLoaded } = useUser();
-  const [signInComplete, setSignInComplete] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [signatureFile, setSignatureFile] = useState<File | null>(null);
   const [role, setRole] = useState<string>("");
   const clerk = useClerk();
@@ -20,14 +20,20 @@ function DoctorLogin() {
   }
 
   useEffect(() => {
-    if (isLoaded && !user) clerk.redirectToSignIn();
+    if (isLoaded && !user) {
+      clerk.redirectToSignIn().then(() => {
+        navigate("/doctor/dashboard");
+      });
+    }
 
     if (isLoaded && user) {
+      setLoading(true);
       api.get(`/doctor/${user.id}`).then(({ data }: { data: DoctorData }) => {
         if (data.doctor !== null) {
-          setSignInComplete(true);
-          navigate("/doctor/dashboard");
+          navigate("/doctor/dashboard", { state: data.doctor });
+          setLoading(false);
         }
+        setLoading(false);
       });
     }
   }, [user, clerk, isLoaded, navigate]);
@@ -51,13 +57,14 @@ function DoctorLogin() {
       .post("/doctor/register", formData, config)
       .then((response) => {
         console.log(response.data);
+        navigate("/doctor/dashboard", { state: response.data });
       })
       .catch(console.log);
   };
 
   return (
     <div>
-      {user && !signInComplete ? (
+      {user && isLoaded && !loading ? (
         <>
           <form onSubmit={(e) => handleFileUpload(e)}>
             <input
@@ -76,7 +83,7 @@ function DoctorLogin() {
           </form>
         </>
       ) : (
-        ""
+        <p>Loading...</p>
       )}
     </div>
   );
