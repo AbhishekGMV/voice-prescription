@@ -8,7 +8,7 @@ export default function DoctorDashboard() {
 
   useEffect(() => {
     if (!location.state) navigate("/doctor/login");
-  }, []);
+  }, [location.state, navigate]);
   return (
     <div>
       <UserButton />
