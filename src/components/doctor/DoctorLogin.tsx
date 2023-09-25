@@ -15,6 +15,7 @@ function DoctorLogin() {
     doctor: {
       id: number;
       signatureUrl: string;
+      signatureFilename: string;
       role: string;
     };
   }
