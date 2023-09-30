@@ -64,7 +64,7 @@ export default function Homepage() {
             className="mt-6 p-3 text-white font-semibold rounded-lg bg-sky-500"
             onClick={() => {
               const accountTypeSelected = accountType.toLocaleLowerCase();
-              navigate(`${accountTypeSelected}/login`);
+              navigate(`${accountTypeSelected}/onboard`);
             }}
           >
             Login as {accountType}

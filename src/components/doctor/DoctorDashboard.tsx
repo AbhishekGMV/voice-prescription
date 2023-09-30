@@ -7,7 +7,7 @@ export default function DoctorDashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!location.state) navigate("/doctor/login");
+    if (!location.state) navigate("/doctor/onboard");
   }, [location.state, navigate]);
   return (
     <div>
