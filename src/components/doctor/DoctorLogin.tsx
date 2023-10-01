@@ -101,7 +101,7 @@ const DoctorLogin = () => {
   return (
     <Box>
       <div className="h-screen flex justify-center items-center">
-        {user && isLoaded && !loading ? (
+        {!loading && user ? (
           <div
             className="shadow-xl"
             style={{
