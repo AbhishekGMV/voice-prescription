@@ -39,7 +39,7 @@ const rows = [
   { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
 ];
 
-export default function DoctorDashboard() {
+export default function DoctorAppointment() {
   const location = useLocation();
   const navigate = useNavigate();
   const { isLoaded, user } = useUser();

@@ -4,10 +4,7 @@ import NotFound from "./components/NotFound";
 import DoctorLogin from "./components/doctor/DoctorLogin";
 import PatientLogin from "./components/patient/PatientLogin";
 import DoctorDashboard from "./components/doctor/DoctorDashboard";
-// import DoctorRegister from "./components/DoctorRegister";
-// import PatientRegister from "./components/PatientRegister";
-// import DoctorDashboard from "./components/DoctorDashboard";
-// import PatientDashboard from "./components/PatientDashboard";
+import DoctorAppointment from "./components/doctor/DoctorAppointment";
 
 function App() {
   return (
@@ -15,13 +12,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/doctor/onboard" element={<DoctorLogin />} />
-        {/* <Route path="/doctor/register" element={<DoctorRegister />} /> */}
         <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
-
+        <Route path="/doctor/appointments" element={<DoctorAppointment />} />
         <Route path="/patient/login" element={<PatientLogin />} />
-        {/* <Route path="/patient/register" element={<PatientRegister />} /> */}
-        {/* <Route path="/patient/dashboard" element={<PatientDashboard />} /> */}
-
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
