@@ -11,6 +11,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Snackbar,
   styled,
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -32,13 +33,17 @@ const DoctorLogin = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [signatureFile, setSignatureFile] = useState<File | null>(null);
   const [signatureFilePreview, setSignatureFilePreview] = useState<string>("");
-  const [role, setRole] = useState<string>(""); // Default role
+  const [role, setRole] = useState<string>("");
+  const [error, setError] = useState<boolean>(false);
   const clerk = useClerk();
   const navigate = useNavigate();
 
   interface DoctorData {
     doctor: {
       id: number;
+      name: string;
+      imageUrl: string;
+      phone: string;
       signatureUrl: string;
       signatureFilename: string;
       role: string;
@@ -46,19 +51,28 @@ const DoctorLogin = () => {
   }
 
   useEffect(() => {
-    if (isLoaded && !user) {
-      clerk.redirectToSignIn();
-    }
+    async function handleDoctorLogin() {
+      if (isLoaded && !user) {
+        clerk.redirectToSignIn();
+      }
 
-    if (isLoaded && user) {
-      setLoading(true);
-      api.get(`/doctor/${user.id}`).then(({ data }: { data: DoctorData }) => {
-        if (data.doctor !== null) {
-          navigate("/doctor/dashboard", { state: data.doctor });
+      if (isLoaded && user) {
+        setLoading(true);
+        try {
+          const { data }: { data: DoctorData } = await api.get(
+            `/doctor/${user.id}`
+          );
+          if (data.doctor !== null) {
+            navigate("/doctor/dashboard", { state: data.doctor });
+          }
+        } catch (err) {
+          console.log(err);
+          setError(true);
         }
         setLoading(false);
-      });
+      }
     }
+    handleDoctorLogin();
   }, [user, clerk, isLoaded, navigate]);
 
   function handleFileUpload(e: React.FormEvent<HTMLInputElement>) {
@@ -77,11 +91,16 @@ const DoctorLogin = () => {
     e.preventDefault();
 
     if (!signatureFile || !user) return;
-
+    const metaData = {
+      id: user.id,
+      name: user.fullName,
+      phone: user.primaryPhoneNumber?.phoneNumber,
+      imageUrl: user.imageUrl,
+      role,
+    };
     const formData = new FormData();
     formData.append("signature", signatureFile);
-    formData.append("id", user.id);
-    formData.append("role", role);
+    formData.append("user", JSON.stringify(metaData));
 
     const config = {
       headers: {
@@ -101,7 +120,7 @@ const DoctorLogin = () => {
   return (
     <Box>
       <div className="h-screen flex justify-center items-center">
-        {!loading && user ? (
+        {!error && !loading && user ? (
           <div
             className="shadow-xl"
             style={{
@@ -167,6 +186,17 @@ const DoctorLogin = () => {
           <CircularProgress />
         )}
       </div>
+      {error ? (
+        <Snackbar
+          open={error}
+          autoHideDuration={5000}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        >
+          <Alert severity="error">Server error</Alert>
+        </Snackbar>
+      ) : (
+        ""
+      )}
     </Box>
   );
 };
