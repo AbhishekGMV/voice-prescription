@@ -1,10 +1,11 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+  import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Homepage from "./components/Homepage";
 import NotFound from "./components/NotFound";
 import DoctorLogin from "./components/doctor/DoctorLogin";
 import PatientLogin from "./components/patient/PatientLogin";
 import DoctorDashboard from "./components/doctor/DoctorDashboard";
 import DoctorAppointment from "./components/doctor/DoctorAppointment";
+import "./index.css"
 
 function App() {
   return (

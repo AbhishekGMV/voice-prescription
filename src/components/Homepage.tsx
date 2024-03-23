@@ -1,80 +1,76 @@
-import { useState } from "react";
-import * as constants from "../utils/constants";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import "../styles/homepage.css";
-import { useNavigate } from "react-router-dom";
-
-interface CardProps {
-  isSelected: boolean;
-  onClick: () => void;
-}
-
-function DoctorCard({ isSelected, onClick }: CardProps) {
+function Homepage() {
   return (
-    <div
-      className={`card card__doctor ${
-        isSelected ? "selected" : ""
-      } rounded-full cursor-pointer`}
-      onClick={onClick}
-    >
-      {isSelected && <span className="checkmark">&#10003;</span>}
+    <div>
+      <Card className="w-full max-w-sm">
+        <Tabs defaultValue="doctor" className="w-[400px]">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="doctor">Doctor</TabsTrigger>
+            <TabsTrigger value="password">Patient</TabsTrigger>
+          </TabsList>
+          <TabsContent value="doctor">
+            <Card>
+              <CardHeader>
+                <CardTitle>Doctor</CardTitle>
+                <CardDescription>
+                  Make changes to your account here. Click save when you're
+                  done.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="space-y-1">
+                  <Label htmlFor="name">Name</Label>
+                  <Input id="name" defaultValue="Pedro Duarte" />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="username">Username</Label>
+                  <Input id="username" defaultValue="@peduarte" />
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button>Save changes</Button>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+          <TabsContent value="password">
+            <Card>
+              <CardHeader>
+                <CardTitle>Password</CardTitle>
+                <CardDescription>
+                  Change your password here. After saving, you'll be logged out.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="space-y-1">
+                  <Label htmlFor="current">Current password</Label>
+                  <Input id="current" type="password" />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="new">New password</Label>
+                  <Input id="new" type="password" />
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button>Save password</Button>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </Card>
     </div>
   );
 }
 
-function PatientCard({ isSelected, onClick }: CardProps) {
-  return (
-    <div
-      className={`card card__patient ${
-        isSelected ? "selected" : ""
-      } rounded-full cursor-pointer`}
-      onClick={onClick}
-    >
-      {isSelected && <span className="checkmark">&#10003;</span>}
-    </div>
-  );
-}
-
-export default function Homepage() {
-  const [accountType, setAccountType] = useState<string>("");
-  const navigate = useNavigate();
-
-  if (!import.meta.env.VITE_REACT_APP_CLERK_PUBLISHABLE_KEY) {
-    throw new Error("Missing Publishable Key");
-  }
-
-  return (
-    <div className="homepage shadow-xl">
-      <h3 className="text-3xl p-12 text-blue-500 text-center font-bold">
-        Choose Account Type
-      </h3>
-      <div className="card-section flex justify-center">
-        <DoctorCard
-          isSelected={accountType === constants.DOCTOR}
-          onClick={() => setAccountType(constants.DOCTOR)}
-        />
-        <PatientCard
-          isSelected={accountType === constants.PATIENT}
-          onClick={() => setAccountType(constants.PATIENT)}
-        />
-      </div>
-      <div className="text-center">
-        {accountType ? (
-          <button
-            className="mt-6 p-3 text-white font-semibold rounded-lg bg-sky-500"
-            onClick={() => {
-              const accountTypeSelected = accountType.toLocaleLowerCase();
-              navigate(`${accountTypeSelected}/onboard`);
-            }}
-          >
-            Login as {accountType}
-          </button>
-        ) : (
-          <p className="text-center  mt-4 font-semibold">
-            Select either doctor or patient account type.
-          </p>
-        )}
-      </div>
-    </div>
-  );
-}
+export default Homepage;
