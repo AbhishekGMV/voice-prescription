@@ -17,6 +17,7 @@ import api from "@/api";
 import { useToast } from "../ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import { Card } from "../ui/card";
+import axios from "axios";
 
 const formSchema = z.object({
   phone: z.string().min(10).max(13),
@@ -47,8 +48,10 @@ export function DoctorLogin() {
         navigate("/doctor/dashboard");
       }
     } catch (err) {
-      const message = err.response.data.message || "An error occured";
-      console.log(message);
+      let message = (err as Error).message || "An error occured";
+      if (axios.isAxiosError(err)) {
+        message = err.response?.data.message;
+      }
       toast({
         title: "Error",
         description: message,
@@ -95,7 +98,9 @@ export function DoctorLogin() {
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <Button type="submit" disabled={doctorStore.loading}>
+            Submit
+          </Button>
         </form>
       </Form>
     </Card>
