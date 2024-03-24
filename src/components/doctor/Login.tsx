@@ -17,6 +17,7 @@ import api from "@/api";
 import { useToast } from "../ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import { Card } from "../ui/card";
+import { ReloadIcon } from "@radix-ui/react-icons";
 import axios from "axios";
 
 const formSchema = z.object({
@@ -45,6 +46,8 @@ export function DoctorLogin() {
         password,
       });
       if (data.data && data.data.token) {
+        localStorage.setItem("token", data.data.token);
+        doctorStore.setToken(data.data.token);
         navigate("/doctor/dashboard");
       }
     } catch (err) {
@@ -73,10 +76,10 @@ export function DoctorLogin() {
               <FormItem>
                 <FormLabel>Phone</FormLabel>
                 <FormControl>
-                  <Input placeholder="shadcn" {...field} />
+                  <Input placeholder="Phone" {...field} />
                 </FormControl>
                 <FormDescription>
-                  We don't share your phone number with third party
+                  We don't share your phone number with anyone
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -89,16 +92,17 @@ export function DoctorLogin() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input placeholder="shadcn" {...field} />
+                  <Input type="password" placeholder="Password" {...field} />
                 </FormControl>
-                <FormDescription>
-                  Password is encryted with cryptographic algorithm
-                </FormDescription>
+                <FormDescription>Password is encryted</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
           <Button type="submit" disabled={doctorStore.loading}>
+            {doctorStore.loading ? (
+              <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+            ) : null}
             Submit
           </Button>
         </form>

@@ -3,9 +3,10 @@ import Homepage from "./components/Homepage";
 import NotFound from "./components/NotFound";
 // import DoctorLogin from "./components/doctor/DoctorLogin";
 import PatientLogin from "./components/patient/PatientLogin";
-import DoctorDashboard from "./components/doctor/DoctorDashboard";
-import DoctorAppointment from "./components/doctor/DoctorAppointment";
+import DoctorDashboard from "./components/doctor/Dashboard";
+import DoctorAppointment from "./components/doctor/Appointment";
 import "./index.css"
+import { DoctorAuth } from "./middleware/Auth";
 
 function App() {
   return (
@@ -13,8 +14,11 @@ function App() {
       <Routes>
         <Route path="/" element={<Homepage />} />
         {/* <Route path="/doctor/onboard" element={<DoctorLogin />} /> */}
-        <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
-        <Route path="/doctor/appointments" element={<DoctorAppointment />} />
+        <Route path="/" element={<DoctorAuth />}>
+          <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
+          <Route path="/doctor/appointment" element={<DoctorAppointment />} />
+        </Route>
+
         <Route path="/patient/login" element={<PatientLogin />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
