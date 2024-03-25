@@ -62,6 +62,18 @@ export const columns: ColumnDef<Consultation>[] = [
   {
     accessorKey: "createdAt",
     header: "Date & time",
+    cell: (params) => {
+      const date = new Intl.DateTimeFormat("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "2-digit",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      }).format(new Date(params.getValue() as string));
+
+      return date;
+    },
   },
   {
     accessorKey: "prescriptionUrl",
