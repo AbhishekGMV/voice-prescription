@@ -46,8 +46,9 @@ export function DoctorLogin() {
         password,
       });
       if (data.data && data.data.token) {
-        localStorage.setItem("token", data.data.token);
-        doctorStore.setToken(data.data.token);
+        const user = { ...data.data, phone };
+        localStorage.setItem("user", JSON.stringify(user));
+        doctorStore.setUser(user);
         navigate("/doctor/dashboard");
       }
     } catch (err) {

@@ -3,13 +3,17 @@ import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
 export const DoctorAuth = () => {
-  const token = useDoctorStore().token || localStorage.getItem("token");
+  const { user, setUser } = useDoctorStore();
   const navigate = useNavigate();
   useEffect(() => {
-    if (!token) {
-      return navigate("/");
+    if (!user || !user.token) {
+      const localUser = JSON.parse(localStorage.getItem("user") || "{}");
+      setUser(localUser);
+      if (!localUser) {
+        return navigate("/");
+      }
     }
-  }, [navigate, token]);
+  }, [navigate, setUser]);
 
   return <Outlet />;
 };

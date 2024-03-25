@@ -17,7 +17,7 @@ export function UserNav() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.setItem("token", "");
+    localStorage.setItem("user", "{}");
     doctorStore.handleUserLogout();
     navigate("/");
   };

@@ -1,33 +1,28 @@
 import { create } from 'zustand'
 
-type Store = {
+type Doctor = {
     phone: string
     password: string
+    token: string
+    name: string
+    id: string
+}
+
+type Store = {
     loading: boolean
-    token: string | null
+    user: Doctor | null
 }
 
 type Action = {
-    setPhone: (phone: string) => void
-    setPassword: (password: string) => void
-    setLoading: (loading: boolean) => void
-    setToken: (token: string | null) => void
+    setUser: (user: Doctor) => void
     handleUserLogout: () => void
+    setLoading: (loading: boolean) => void
 }
 
 export const useDoctorStore = create<Store & Action>()((set) => ({
-    phone: "",
-    password: "",
+    user: null,
     loading: false,
-    token: null,
-    setPhone: (phone) => set(() => ({ phone })),
-    setPassword: (password) => set(() => ({ password })),
-    setLoading: (loading) => set(() => ({ loading })),
-    setToken: (token) => set(() => ({ token })),
-    handleUserLogout: () => set(() => ({
-        phone: "",
-        password: "",
-        loading: false,
-        token: null,
-    }))
+    setUser: (user: Doctor) => set(() => ({ user })),
+    setLoading: (loading: boolean) => set({ loading }),
+    handleUserLogout: () => set({ user: null })
 }))
