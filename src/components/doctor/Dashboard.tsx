@@ -12,11 +12,9 @@ export default function DoctorDashboard() {
     if (!user) return;
 
     (async () => {
-      if (!user) return;
-
       const { data } = await api.get(`/consultation/doctor/${user.id}`, {
         headers: {
-          Authorization: user.token,
+          Authorization: `Bearer ${user.token}`,
         },
       });
       setConsultations(data.data);
