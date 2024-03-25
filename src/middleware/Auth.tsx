@@ -9,7 +9,7 @@ export const DoctorAuth = () => {
     if (!user || !user.token) {
       const localUser = JSON.parse(localStorage.getItem("user") || "{}");
       setUser(localUser);
-      if (!localUser) {
+      if (!localUser || !localUser.token) {
         return navigate("/");
       }
     }

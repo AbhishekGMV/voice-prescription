@@ -16,16 +16,43 @@ export type Consultation = {
   audio: string;
 };
 
-const playPrescriptionAudio = (prescriptionData :string) => {
-    const msg = new SpeechSynthesisUtterance();
-    msg.voice = speechSynthesis.getVoices()[0];
-    msg.volume = 1;
-    msg.rate = 0.9;
-    msg.pitch = 1;
-    msg.text = prescriptionData;
-    msg.lang = "en-US";
-    speechSynthesis.speak(msg);
-  };
+const playPrescriptionAudio = (prescriptionData: string) => {
+  const msg = new SpeechSynthesisUtterance();
+  msg.voice = speechSynthesis.getVoices()[0];
+  msg.volume = 1;
+  msg.rate = 0.95;
+  msg.pitch = 1;
+  msg.text = prescriptionData;
+  msg.lang = "en-US";
+  speechSynthesis.speak(msg);
+};
+
+const audioControls = [
+  {
+    icon: faPlayCircle,
+    handleClick: playPrescriptionAudio,
+    variant: "bg-sky-700",
+    hover: "bg-sky-800",
+  },
+  {
+    icon: faPause,
+    handleClick: () => speechSynthesis.pause(),
+    variant: "bg-yellow-700",
+    hover: "bg-yellow-800",
+  },
+  {
+    icon: faStepForward,
+    handleClick: () => speechSynthesis.resume(),
+    variant: "bg-slate-700",
+    hover: "bg-slate-800",
+  },
+  {
+    icon: faStopCircle,
+    handleClick: () => speechSynthesis.cancel(),
+    variant: "bg-red-700",
+    hover: "bg-red-800",
+  },
+];
 
 export const columns: ColumnDef<Consultation>[] = [
   {
@@ -41,7 +68,7 @@ export const columns: ColumnDef<Consultation>[] = [
     header: "Download",
     cell: (params) => (
       <Button
-        onClick={() => window.open((params.getValue() as string), "_blank")}
+        onClick={() => window.open(params.getValue() as string, "_blank")}
         className="size-8 bg-green-700 hover:bg-green-800"
       >
         <FontAwesomeIcon icon={faDownload} />
@@ -52,12 +79,12 @@ export const columns: ColumnDef<Consultation>[] = [
     accessorKey: "audio",
     header: "Audio",
     cell: (params) =>
-      [faPlayCircle, faPause, faStepForward, faStopCircle].map((icon, idx) => {
+      audioControls.map(({ icon, handleClick, variant, hover }, idx) => {
         return (
           <Button
-            onClick={() => playPrescriptionAudio(params.getValue() as string)}
+            onClick={() => handleClick(params.getValue() as string)}
             key={idx}
-            className="size-8 m-2"
+            className={`size-8 m-2 ${variant} hover:${hover}`}
           >
             <FontAwesomeIcon icon={icon} />
           </Button>
