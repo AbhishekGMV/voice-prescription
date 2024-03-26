@@ -1,28 +1,33 @@
-import { create } from 'zustand'
+import { NavigateFunction } from "react-router-dom";
+import { create } from "zustand";
 
-type Doctor = {
-    phone: string
-    password: string
-    token: string
-    name: string
-    id: string
-}
+export type User = {
+  phone: string;
+  password: string;
+  token: string;
+  name: string;
+  id: string;
+};
 
 type Store = {
-    loading: boolean
-    user: Doctor | null
-}
+  loading: boolean;
+  user: User | null;
+};
 
 type Action = {
-    setUser: (user: Doctor) => void
-    handleUserLogout: () => void
-    setLoading: (loading: boolean) => void
-}
+  setUser: (user: User) => void;
+  handleUserLogout: (navigate: NavigateFunction) => void;
+  setLoading: (loading: boolean) => void;
+};
 
 export const useDoctorStore = create<Store & Action>()((set) => ({
-    user: null,
-    loading: false,
-    setUser: (user: Doctor) => set(() => ({ user })),
-    setLoading: (loading: boolean) => set({ loading }),
-    handleUserLogout: () => set({ user: null })
-}))
+  user: null,
+  loading: false,
+  setUser: (user: User) => set(() => ({ user })),
+  setLoading: (loading: boolean) => set({ loading }),
+  handleUserLogout: (navigate: NavigateFunction) => {
+    localStorage.setItem("user", "{}");
+    set({ user: null });
+    navigate("/");
+  },
+}));

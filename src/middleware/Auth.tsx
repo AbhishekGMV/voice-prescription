@@ -7,7 +7,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 export const DoctorAuth = () => {
   const { user, setUser } = useDoctorStore();
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     if (!user || !user.token) {
       const localUser = JSON.parse(localStorage.getItem("user") || "{}");
