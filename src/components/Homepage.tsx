@@ -15,8 +15,8 @@ import { DoctorLogin } from "./doctor/Login";
 function Homepage() {
   
   return (
-    <div>
-      <Card className="w-full max-w-sm">
+    <div className="flex justify-center item-center">
+      <Card className=" w-full max-w-sm">
         <Tabs defaultValue="doctor" className="w-[400px]">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="doctor">Doctor</TabsTrigger>

@@ -7,6 +7,7 @@ import DoctorDashboard from "./components/doctor/Dashboard";
 import DoctorAppointment from "./components/doctor/Appointment";
 import "./index.css"
 import { DoctorAuth } from "./middleware/Auth";
+import ProcessPrescription from "./components/ProcessPrescription";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/" element={<DoctorAuth />}>
           <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
           <Route path="/doctor/appointment" element={<DoctorAppointment />} />
+          <Route path="/doctor/prescription" element={<ProcessPrescription />} />
         </Route>
 
         <Route path="/patient/login" element={<PatientLogin />} />

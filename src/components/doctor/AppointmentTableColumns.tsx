@@ -1,5 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "../ui/button";
+import { Link } from "react-router-dom";
 
 export type Appointment = {
   patientName: string;
@@ -38,7 +39,9 @@ export const appointmentColumns: ColumnDef<Appointment>[] = [
     accessorKey: "",
     header: "Action",
     cell: () => (
+        <Link to="/doctor/prescription"> 
         <Button>Make prescription</Button>
+        </Link>
     )
   },
 ];
