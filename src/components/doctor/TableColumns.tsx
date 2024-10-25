@@ -88,7 +88,7 @@ export const columns: ColumnDef<Consultation>[] = [
     ),
   },
   {
-    accessorKey: "audio",
+    accessorKey: "prescriptionContent",
     header: "Audio",
     cell: (params) =>
       audioControls.map(({ icon, handleClick, variant, hover }, idx) => {

@@ -14,15 +14,17 @@ import {
 } from "@/components/ui/form";
 import { z } from "zod";
 import api from "@/api";
-import { useToast } from "../ui/use-toast";
+import { useToast } from "../../components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
-import { Card } from "../ui/card";
+import { Card } from "../../components/ui/card";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import axios from "axios";
 
 const formSchema = z.object({
-  phone: z.string().min(10).max(13),
-  password: z.string().min(1),
+  user: z.object({
+    phone: z.string().min(10).max(13),
+    password: z.string().min(1),
+  }),
 });
 
 export function DoctorLogin() {
@@ -33,26 +35,23 @@ export function DoctorLogin() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      phone: "",
-      password: "",
+      user: { phone: "", password: "" },
     },
   });
 
-  async function onSubmit({ phone, password }: z.infer<typeof formSchema>) {
+  async function onSubmit({ user }: z.infer<typeof formSchema>) {
     doctorStore.setLoading(true);
     try {
       const { data } = await api.post("/doctor/login", {
-        phone,
-        password,
+        user,
       });
       if (data.data && data.data.token) {
-        const user = { ...data.data, phone };
-        localStorage.setItem("user", JSON.stringify(user));
+        const user = { ...data.data };
         doctorStore.setUser(user);
         navigate("/doctor/dashboard");
       }
     } catch (err) {
-      let message = (err as Error).message || "An error occured";
+      let message = (err as Error).message || "An error occurred";
       if (axios.isAxiosError(err)) {
         message = err.response?.data.message;
       }
@@ -72,7 +71,7 @@ export function DoctorLogin() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
             control={form.control}
-            name="phone"
+            name="user.phone"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Phone</FormLabel>
@@ -88,7 +87,7 @@ export function DoctorLogin() {
           />
           <FormField
             control={form.control}
-            name="password"
+            name="user.password"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Password</FormLabel>
@@ -100,7 +99,11 @@ export function DoctorLogin() {
               </FormItem>
             )}
           />
-          <Button type="submit" disabled={doctorStore.loading}>
+          <Button
+            className="w-full"
+            type="submit"
+            disabled={doctorStore.loading}
+          >
             {doctorStore.loading ? (
               <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
             ) : null}

@@ -15,6 +15,7 @@ export default function DoctorAppointment() {
       const { data } = await api.get(`/appointment/doctor/${user.id}`, {
         headers: {
           Authorization: `Bearer ${user.token}`,
+          id: user.id,
         },
       });
       setAppointments(data.data);

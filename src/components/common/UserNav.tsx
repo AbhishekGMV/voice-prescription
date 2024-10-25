@@ -42,7 +42,10 @@ export function UserNav() {
           <DropdownMenuItem>Profile</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="cursor-pointer" onClick={() => handleUserLogout(navigate)}>
+        <DropdownMenuItem
+          className="cursor-pointer"
+          onClick={() => handleUserLogout(navigate)}
+        >
           Log out
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -9,7 +9,6 @@ export type Appointment = {
   audio: string;
 };
 
-
 export const appointmentColumns: ColumnDef<Appointment>[] = [
   {
     accessorKey: "patient.name",
@@ -39,9 +38,9 @@ export const appointmentColumns: ColumnDef<Appointment>[] = [
     accessorKey: "",
     header: "Action",
     cell: () => (
-        <Link to="/doctor/prescription"> 
+      <Link to="/doctor/prescription">
         <Button>Make prescription</Button>
-        </Link>
-    )
+      </Link>
+    ),
   },
 ];

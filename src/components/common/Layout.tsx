@@ -1,12 +1,11 @@
-import React from 'react'
+import React from "react";
 import { Toaster } from "@/components/ui/toaster";
-
 
 interface RootLayoutProps {
   children: React.ReactNode;
 }
 
-function Layout({children}: RootLayoutProps) {
+function Layout({ children }: RootLayoutProps) {
   return (
     <div>
       {children}
@@ -15,4 +14,4 @@ function Layout({children}: RootLayoutProps) {
   );
 }
 
-export default Layout
+export default Layout;

@@ -1,5 +1,5 @@
-import { DataTable } from "./DataTable";
-import { columns } from "./TableColumns";
+import { DataTable } from "../../components/doctor/DataTable";
+import { columns } from "../../components/doctor/TableColumns";
 import api from "@/api";
 import { useEffect, useState } from "react";
 import { useDoctorStore } from "@/store/doctor.store";
@@ -10,11 +10,11 @@ export default function DoctorDashboard() {
 
   useEffect(() => {
     if (!user) return;
-
     (async () => {
       const { data } = await api.get(`/consultation/doctor/${user.id}`, {
         headers: {
           Authorization: `Bearer ${user.token}`,
+          id: user.id,
         },
       });
       setConsultations(data.data);
