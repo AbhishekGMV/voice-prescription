@@ -9,7 +9,7 @@ export const DoctorAuth = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user || !user.token) {
+    if (!user) {
       return navigate("/");
     }
   }, []);

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useDoctorStore } from "@/store/doctor.store";
 import api from "@/api";
-import { appointmentColumns } from "./AppointmentTableColumns";
-import { DataTable } from "./DataTable";
+import { appointmentColumns } from "@/components/appointment/DoctorAppointmentColumns";
+import { DataTable } from "@/components/doctor/DataTable";
 
 export default function DoctorAppointment() {
   const [appointments, setAppointments] = useState([]);

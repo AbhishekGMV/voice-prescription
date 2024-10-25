@@ -4,7 +4,7 @@ import NotFound from "./pages/NotFound";
 import PatientLogin from "./components/patient/PatientLogin";
 import DoctorDashboard from "./pages/doctor/Dashboard";
 import "./index.css";
-import { DoctorAuth } from "./middleware/Auth";
+import { DoctorAuth } from "./hooks/Auth";
 import ProcessPrescription from "./pages/doctor/ProcessPrescription";
 import LandingPage from "./pages/LandingPage";
 import Doctor from "./pages/doctor/Doctor";

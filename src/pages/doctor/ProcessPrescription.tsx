@@ -1,5 +1,5 @@
-import logo from "../assets/logo.jpeg";
-import rxLogo from "../assets/prescription-logo.png";
+import logo from "../../assets/logo.jpeg";
+import rxLogo from "../../assets/prescription-logo.png";
 
 import {
   Table,

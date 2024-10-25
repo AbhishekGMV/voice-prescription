@@ -292,6 +292,7 @@ export function DoctorSignatureUpload() {
             </Button>
             <Button
               className="w-full"
+              type="button"
               variant={"secondary"}
               onClick={handleLogin}
             >
