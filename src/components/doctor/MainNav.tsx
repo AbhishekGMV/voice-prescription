@@ -17,6 +17,11 @@ export function MainNav({
       section: "Appointment",
       className: "text-sm font-medium transition-colors hover:text-primary",
     },
+    {
+      path: "/doctor/schedule",
+      section: "Schedule",
+      className: "text-sm font-medium transition-colors hover:text-primary",
+    },
   ];
   return (
     <nav

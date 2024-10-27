@@ -11,7 +11,9 @@
     },
 
     /* Bundler mode */
-    "moduleResolution": "bundler",
+    "moduleResolution": "Node",
+    "typeRoots": ["./node_modules/@types", "./types"],
+    "types": ["node", "react"],
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,

@@ -10,6 +10,7 @@ import LandingPage from "./pages/LandingPage";
 import Doctor from "./pages/doctor/Doctor";
 import { DoctorSignatureUpload } from "./pages/doctor/Register";
 import DoctorAppointment from "./pages/appointment/Appointment";
+import Schedule from "./pages/schedule/Schedule";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/doctor/sign" element={<DoctorSignatureUpload />} />
           <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
           <Route path="/doctor/appointment" element={<DoctorAppointment />} />
+          <Route path="/doctor/schedule" element={<Schedule />} />
           <Route
             path="/doctor/prescription"
             element={<ProcessPrescription />}

@@ -1,15 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
+import { DoctorAppointment } from "@/store/appointment.store";
 
-export type Appointment = {
-  patientName: string;
-  datetime: string;
-  pdfUrl: string;
-  audio: string;
-};
-
-export const appointmentColumns: ColumnDef<Appointment>[] = [
+export const appointmentColumns: ColumnDef<DoctorAppointment>[] = [
   {
     accessorKey: "patient.name",
     header: "Patient",
