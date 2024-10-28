@@ -1,99 +1,157 @@
 import api from "@/api";
-import { DateTimePicker } from "@/components/doctor/DateTimePicker";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { DAYS_OF_WEEK } from "@/data/constants";
 import { useDoctorStore } from "@/store/doctor.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ReloadIcon } from "@radix-ui/react-icons";
-import { useForm } from "react-hook-form";
+import moment, { unitOfTime } from "moment";
+import { useEffect } from "react";
+// import { useEffect } from "react";
+import { ControllerRenderProps, useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 
 function Schedule() {
   const { user } = useDoctorStore();
 
   const formSchema = z.object({
-    fromDate: z.date(),
-    toDate: z.date(),
+    schedule: z.array(
+      z.object({
+        startTime: z.string(),
+        endTime: z.string(),
+        dayOfWeek: z.enum(DAYS_OF_WEEK),
+      })
+    ),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fromDate: undefined,
-      toDate: undefined,
+      schedule: DAYS_OF_WEEK.map((day, idx) => ({
+        dayOfWeek: day,
+        startTime: moment()
+          .startOf("isoWeek" as unitOfTime.StartOf)
+          .add(idx, "days")
+          .set("hours", 9)
+          .set("minutes", 0)
+          .format(),
+        endTime: moment()
+          .startOf("isoWeek" as unitOfTime.StartOf)
+          .add(idx, "days")
+          .set("hours", 18)
+          .set("minutes", 0)
+          .format(),
+      })),
     },
   });
 
-  const onSubmit = async ({ fromDate, toDate }: z.infer<typeof formSchema>) => {
-    if (fromDate === undefined || toDate === undefined) {
-      return;
-    }
-    if (!user) return;
+  const { fields: scheduleFields } = useFieldArray({
+    name: "schedule",
+    control: form.control,
+  });
 
-    const data = {
-      startTime: new Date(fromDate).toISOString(),
-      endTime: new Date(toDate).toISOString(),
-      interval: 30,
-      date: new Date().toISOString(),
-      doctorId: user.id,
-    };
-
-    try {
-      const result = await api.post("/slot/availability", data, {
+  useEffect(() => {
+    (async () => {
+      if (!user) return;
+      const { data } = await api.get("/availability", {
         headers: {
           Authorization: `Bearer ${user.token}`,
           id: user.id,
         },
       });
-      console.log(result);
-    } catch (err) {
-      console.log(err);
-    }
+      const availabilities = data?.data.map((availability) => ({
+        startTime: moment(availability.startTime).format("HH:mm"),
+        endTime: moment(availability.endTime).format("HH:mm"),
+        ...availability,
+      }));
+      availabilities.map((schedule, idx) => {
+        form.setValue(`schedule.${idx}.startTime`, schedule.startTime);
+        form.setValue(`schedule.${idx}.endTime`, schedule.endTime);
+        form.setValue(`schedule.${idx}.dayOfWeek`, schedule.dayOfWeek);
+      });
+    })();
+  }, [user, form]);
+
+  const handleTimeChange = (
+    field: ControllerRenderProps<z.infer<typeof formSchema>>,
+    newValue: string,
+    currValue: string
+  ) => {
+    const updatedValue = moment(currValue)
+      .set({
+        hour: moment(newValue, "HH:mm").hour(),
+        minute: moment(newValue, "HH:mm").minute(),
+      })
+      .format();
+    field.onChange(updatedValue);
+  };
+
+  const onSubmit = async ({ schedule }: z.infer<typeof formSchema>) => {
+    if (!user) return;
+    const data = {
+      availabilities: schedule,
+      weekStart: moment().startOf("isoWeek").format("YYYY-MM-DD").toString(),
+      interval: 30,
+    };
+    const result = await api.post("/availability", data, {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+        id: user.id,
+      },
+    });
+    console.log(result);
   };
 
   return (
-    <div className="container flex flex-col gap-6">
+    <div className="container">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <FormField
-            control={form.control}
-            name="fromDate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>From</FormLabel>
-                <FormControl>
-                  <DateTimePicker
-                    date={field.value}
-                    setDate={(date) => form.setValue("fromDate", date as Date)}
-                    {...field}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="toDate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>To</FormLabel>
-                <FormControl>
-                  <DateTimePicker
-                    date={field.value}
-                    setDate={(date) => form.setValue("toDate", date as Date)}
-                    {...field}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
+          {scheduleFields.map((schedule, idx) => {
+            return (
+              <div key={idx} className="flex gap-10">
+                <div className="capitalize ">
+                  {schedule.dayOfWeek.substring(0, 3)}
+                </div>
+                <FormField
+                  control={form.control}
+                  name={`schedule.${idx}.startTime`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="time"
+                          onChange={(e) =>
+                            handleTimeChange(field, e.target.value, field.value)
+                          }
+                          value={moment(field.value).format("HH:mm")}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`schedule.${idx}.endTime`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="time"
+                          onChange={(e) =>
+                            handleTimeChange(field, e.target.value, field.value)
+                          }
+                          value={moment(field.value).format("HH:mm")}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+            );
+          })}
 
           <Button
             className="my-4 "
