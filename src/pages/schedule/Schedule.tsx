@@ -60,16 +60,20 @@ function Schedule() {
           id: user.id,
         },
       });
-      const availabilities = data?.data.map((availability) => ({
-        startTime: moment(availability.startTime).format("HH:mm"),
-        endTime: moment(availability.endTime).format("HH:mm"),
-        ...availability,
-      }));
-      availabilities.map((schedule, idx) => {
-        form.setValue(`schedule.${idx}.startTime`, schedule.startTime);
-        form.setValue(`schedule.${idx}.endTime`, schedule.endTime);
-        form.setValue(`schedule.${idx}.dayOfWeek`, schedule.dayOfWeek);
-      });
+      const availabilities = data?.data.map(
+        (availability: z.infer<typeof data.data>) => ({
+          startTime: moment(availability.startTime).format("HH:mm"),
+          endTime: moment(availability.endTime).format("HH:mm"),
+          ...availability,
+        })
+      );
+      availabilities.map(
+        (schedule: z.infer<typeof availabilities>, idx: number) => {
+          form.setValue(`schedule.${idx}.startTime`, schedule.startTime);
+          form.setValue(`schedule.${idx}.endTime`, schedule.endTime);
+          form.setValue(`schedule.${idx}.dayOfWeek`, schedule.dayOfWeek);
+        }
+      );
     })();
   }, [user, form]);
 
