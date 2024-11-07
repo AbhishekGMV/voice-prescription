@@ -9,12 +9,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useDoctorStore } from "@/store/doctor.store";
-import { useNavigate } from "react-router-dom";
+import { Doctor } from "@/store/doctor.store";
+import { Patient } from "@/store/patient.store";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 
-export function UserNav() {
-  const { user, handleUserLogout } = useDoctorStore();
+interface UserNavProps {
+  user: Doctor | Patient | null;
+  handleUserLogout: (navigate: NavigateFunction) => void;
+}
+
+export function UserNav({ user, handleUserLogout }: UserNavProps) {
+  console.log("user nav", user);
   const navigate = useNavigate();
+  if (!user) {
+    return;
+  }
 
   return (
     <DropdownMenu>
@@ -22,7 +31,7 @@ export function UserNav() {
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
             <AvatarImage src="/avatars/01.png" alt="@user" />
-            <AvatarFallback>SC</AvatarFallback>
+            <AvatarFallback>{user.name?.slice(2) ?? "AA"}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>

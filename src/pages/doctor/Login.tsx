@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { Card } from "../../components/ui/card";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import axios from "axios";
+import { DOCTOR } from "@/data/constants";
 
 const formSchema = z.object({
   user: z.object({
@@ -46,7 +47,7 @@ export function DoctorLogin() {
         user,
       });
       if (data.data && data.data.token) {
-        const user = { ...data.data };
+        const user = { ...data.data, type: DOCTOR.toLowerCase() };
         doctorStore.setUser(user);
         navigate("/doctor/dashboard");
       }

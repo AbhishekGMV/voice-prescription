@@ -1,34 +1,26 @@
+import { Route, routes } from "@/data/routes";
 import { cn } from "@/lib/utils";
+import { Doctor } from "@/store/doctor.store";
+import { Patient } from "@/store/patient.store";
 import { Link, useLocation } from "react-router-dom";
 
-export function MainNav({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLElement>) {
+interface MainNavProps extends React.HTMLAttributes<HTMLElement> {
+  user: Doctor | Patient | null;
+}
+
+export function MainNav({ className, user, ...props }: MainNavProps) {
+  console.log(user);
   const location = useLocation();
-  const routes = [
-    {
-      path: "/doctor/dashboard",
-      section: "Dashboard",
-      className: "text-sm font-medium transition-colors hover:text-primary",
-    },
-    {
-      path: "/doctor/appointment",
-      section: "Appointment",
-      className: "text-sm font-medium transition-colors hover:text-primary",
-    },
-    {
-      path: "/doctor/schedule",
-      section: "Schedule",
-      className: "text-sm font-medium transition-colors hover:text-primary",
-    },
-  ];
+  if (!user || (user.type !== "doctor" && user.type !== "patient")) {
+    return;
+  }
+
   return (
     <nav
       className={cn("flex items-center space-x-4 lg:space-x-6", className)}
       {...props}
     >
-      {routes.map((route, idx) => (
+      {routes[user.type].map((route: Route, idx: number) => (
         <Link
           to={route.path}
           key={idx}

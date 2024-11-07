@@ -19,6 +19,7 @@ import { Card } from "../../components/ui/card";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import axios from "axios";
 import { usePatientStore } from "@/store/patient.store";
+import { PATIENT } from "@/data/constants";
 
 const formSchema = z.object({
   user: z.object({
@@ -45,8 +46,8 @@ export function PatientLogin() {
         user,
       });
       if (data.data && data.data.token) {
-        const user = { ...data.data };
-        patientStore.setUser(user);
+        const user = { ...data.data, type: PATIENT.toLowerCase() };
+        patientStore.setUser({ ...user });
         navigate("/patient/dashboard");
       }
     } catch (err) {

@@ -2,6 +2,8 @@ import api from "@/api";
 import { useEffect, useState } from "react";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
 import { usePatientStore } from "@/store/patient.store";
+import { columns } from "../../components/patient/TableColumns";
+import { DataTable } from "@/components/doctor/DataTable";
 
 export default function PatientDashboard() {
   const [consultations, setConsultations] = useState<[] | null>(null);
@@ -23,16 +25,21 @@ export default function PatientDashboard() {
   return (
     <div>
       <div className="container mx-auto py-10">
-        {consultations === null ? (
-          <div className="h-full w-full flex justify-center items-center ">
-            <LoadingSpinner />
-          </div>
-        ) : consultations.length > 0 ? (
+        {
+          consultations === null ? (
+            <div className="h-full w-full flex justify-center items-center ">
+              <LoadingSpinner />
+            </div>
+          ) : (
+            <DataTable columns={columns} data={consultations} />
+          )
+
+          // : consultations.length > 0 ? (
           // <DataTable columns={columns} data={consultations} />
-          <>Data</>
-        ) : (
-          <h3>No consultations found</h3>
-        )}
+          // ) : (
+          // <h3>No consultations found</h3>
+          // )
+        }
       </div>
     </div>
   );

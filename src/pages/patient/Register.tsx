@@ -39,11 +39,9 @@ export function PatientRegister({
     password: z.string().min(1),
     name: z.string().min(1),
     imageUrl: z.string().optional(),
-    age: z
-      .string()
-      .refine((age) => parseInt(age) > 0 && parseInt(age) < 100, {
-        message: "Invalid age",
-      }),
+    age: z.string().refine((age) => parseInt(age) > 0 && parseInt(age) < 100, {
+      message: "Invalid age",
+    }),
     gender: z.string(),
   });
 
@@ -78,7 +76,7 @@ export function PatientRegister({
           phone,
           password,
           name,
-          age,
+          age: parseInt(age),
           gender,
         },
       };
@@ -89,14 +87,17 @@ export function PatientRegister({
         onRegisterSuccess();
       }
     } catch (err) {
-      let message = (err as Error).message || "An error occurred";
+      let message = (err as Error).message ?? "An error occurred";
       if (axios.isAxiosError(err)) {
         message = err.response?.data.message;
       }
+      console.log(message);
+
       toast({
         title: "Error",
         description: message,
         variant: "destructive",
+        duration: 2000,
       });
     }
 
@@ -154,9 +155,13 @@ export function PatientRegister({
             name="gender"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Role</FormLabel>
+                <FormLabel>Gender</FormLabel>
                 <FormControl>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select
+                    required
+                    onValueChange={field.onChange}
+                    value={field.value}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>

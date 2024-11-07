@@ -1,22 +1,24 @@
+import { PATIENT } from "@/data/constants";
 import { NavigateFunction } from "react-router-dom";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
-export type User = {
+export type Patient = {
   phone?: string | undefined;
   password?: string | undefined;
   token: string;
   name?: string;
   id: string;
+  type: string;
 };
 
 type Store = {
   loading: boolean;
-  user: User | null;
+  user: Patient | null;
 };
 
 type Action = {
-  setUser: (user: User) => void;
+  setUser: (user: Patient) => void;
   handleUserLogout: (navigate: NavigateFunction) => void;
   setLoading: (loading: boolean) => void;
 };
@@ -26,7 +28,8 @@ export const usePatientStore = create<Store & Action>()(
     (set) => ({
       user: null,
       loading: false,
-      setUser: (user: User) => set((state) => ({ ...state, user })),
+      type: PATIENT,
+      setUser: (user: Patient) => set((state) => ({ ...state, user })),
       setLoading: (loading: boolean) => set((state) => ({ ...state, loading })),
       handleUserLogout: (navigate: NavigateFunction) => {
         set({ user: null });
