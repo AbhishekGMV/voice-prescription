@@ -6,18 +6,9 @@ import { LoadingSpinner } from "@/components/common/LoadingSpinner";
 import { useDoctorAppointmentStore } from "@/store/appointment.store";
 import { usePatientStore } from "@/store/patient.store";
 import { BookAppointmentDialogue } from "@/components/patient/BookAppointmentDialogue";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import DoctorList from "../doctor/DoctorList";
 
 export default function PatientAppointment() {
   const { user } = usePatientStore();
@@ -43,11 +34,15 @@ export default function PatientAppointment() {
       <BookAppointmentDialogue />
 
       <div>
-        <Tabs defaultValue="upcoming" className="w-full">
+        <Tabs defaultValue="book" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
             <TabsTrigger value="book">Book appointment</TabsTrigger>
+            <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="book">
+            <DoctorList />
+          </TabsContent>
           <TabsContent value="upcoming">
             {appointmentStore.appointments === null ? (
               <div className="h-full w-full flex justify-center items-center ">
@@ -62,29 +57,6 @@ export default function PatientAppointment() {
             ) : (
               <h3>No appointments found</h3>
             )}
-          </TabsContent>
-          <TabsContent value="book">
-            <Card>
-              <CardHeader>
-                <CardTitle>Book an appointment</CardTitle>
-                <CardDescription>
-                  Change your password here. After saving, you'll be logged out.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <div className="space-y-1">
-                  <Label htmlFor="current">Current password</Label>
-                  <Input id="current" type="password" />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="new">New password</Label>
-                  <Input id="new" type="password" />
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button>Save password</Button>
-              </CardFooter>
-            </Card>
           </TabsContent>
         </Tabs>
       </div>

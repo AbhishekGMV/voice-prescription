@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useDoctorStore } from "@/store/doctor.store";
+import { Doctor, useDoctorStore } from "@/store/doctor.store";
 import {
   Form,
   FormControl,
@@ -38,12 +38,19 @@ export function DoctorRegister() {
     name: z.string(),
     imageUrl: z.string().optional(),
     role: z.string(),
+    gender: z.string(),
   });
 
   const roles = [
     { label: "General", value: "General" },
     { label: "Dental", value: "Dental" },
     { label: "Cardio", value: "Cardio" },
+  ];
+
+  const genders = [
+    { label: "Male", value: "male" },
+    { label: "Female", value: "female" },
+    { label: "Others", value: "others" },
   ];
 
   const form = useForm<z.infer<typeof registerSchema>>({
@@ -61,6 +68,7 @@ export function DoctorRegister() {
     password,
     name,
     role,
+    gender,
   }: z.infer<typeof registerSchema>) {
     doctorStore.setLoading(true);
     try {
@@ -70,12 +78,13 @@ export function DoctorRegister() {
           password,
           name,
           role,
+          gender,
         },
       };
       const { data } = await api.post("/doctor/register", payload);
       if (data.data && data.data.id) {
         const user = { ...data.data, phone };
-        doctorStore.setUser({ ...user, phone, password, name, role });
+        doctorStore.setUser({ ...user, phone, password, name, role, gender });
         navigate("/doctor/sign");
       }
     } catch (err) {
@@ -129,6 +138,36 @@ export function DoctorRegister() {
                               {role.label}
                             </SelectItem>
                           </>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="gender"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Gender</FormLabel>
+                <FormControl>
+                  <Select
+                    required
+                    onValueChange={field.onChange}
+                    value={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {genders.map((gender, idx) => {
+                        return (
+                          <SelectItem key={idx} value={gender.value}>
+                            {gender.label}
+                          </SelectItem>
                         );
                       })}
                     </SelectContent>
@@ -238,7 +277,11 @@ export function DoctorSignatureUpload() {
       });
       if (data.data && data.data.token) {
         const result = { ...data.data };
-        doctorStore.setUser({ ...user, id: result.id, token: result.token });
+        doctorStore.setUser({
+          ...user,
+          id: result.id,
+          token: result.token,
+        } as Doctor);
         navigate("/doctor/dashboard");
       }
     } catch (err) {

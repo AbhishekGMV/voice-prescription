@@ -66,7 +66,7 @@ export function PatientLogin() {
   }
 
   return (
-    <Card className="w-full max-w-sm p-6">
+    <Card className="w-full max-w-sm p-6 space-y-2">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField

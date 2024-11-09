@@ -25,14 +25,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
+import { useNavigate } from "react-router-dom";
+import { PATIENT } from "@/data/constants";
 
-export function PatientRegister({
-  onRegisterSuccess,
-}: {
-  onRegisterSuccess: () => void;
-}) {
+export function PatientRegister() {
   const patientStore = usePatientStore();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const registerSchema = z.object({
     phone: z.string().min(10).max(13),
@@ -84,7 +83,7 @@ export function PatientRegister({
       if (data.data && data.data.id) {
         const user = { ...data.data, phone };
         patientStore.setUser({ ...user, phone, password, name });
-        onRegisterSuccess();
+        navigate("/", { state: { role: PATIENT.toLowerCase(), phone: phone } });
       }
     } catch (err) {
       let message = (err as Error).message ?? "An error occurred";

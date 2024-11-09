@@ -7,10 +7,6 @@ import { useState } from "react";
 function Patient() {
   const [activeTab, setActiveTab] = useState("login");
 
-  const handleRegisterSuccess = () => {
-    setActiveTab("login");
-  };
-
   return (
     <div className="flex justify-center min-h-screen items-center">
       <Card className=" w-full max-w-sm">
@@ -31,7 +27,7 @@ function Patient() {
             <PatientLogin />
           </TabsContent>
           <TabsContent value="register">
-            <PatientRegister onRegisterSuccess={handleRegisterSuccess} />
+            <PatientRegister />
           </TabsContent>
         </Tabs>
       </Card>

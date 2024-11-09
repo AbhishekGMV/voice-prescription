@@ -1,11 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NotFound from "./pages/NotFound";
-// import DoctorLogin from "./components/doctor/DoctorLogin";
 import DoctorDashboard from "./pages/doctor/Dashboard";
 import "./index.css";
 import { DoctorAuth, PatientAuth } from "./hooks/Auth";
 import ProcessPrescription from "./pages/doctor/ProcessPrescription";
-import LandingPage from "./pages/LandingPage";
 import Doctor from "./pages/doctor/Doctor";
 import { DoctorSignatureUpload } from "./pages/doctor/Register";
 import DoctorAppointment from "./pages/doctor/Appointment";
@@ -14,12 +12,16 @@ import { PatientLogin } from "./pages/patient/Login";
 import Patient from "./pages/patient/Patient";
 import PatientDashboard from "./pages/patient/Dashboard";
 import PatientAppointment from "./pages/patient/Appointment";
+import Booking from "./pages/patient/Booking";
+import Signin from "./pages/Signin";
+import Signup from "./pages/Signup";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<Signin />} />
+        <Route path="/register" element={<Signup />} />
         <Route path="/doctor" element={<Doctor />} />
 
         <Route path="/" element={<DoctorAuth />}>
@@ -37,6 +39,7 @@ function App() {
         <Route path="/" element={<PatientAuth />}>
           <Route path="/patient/dashboard" element={<PatientDashboard />} />
           <Route path="/patient/appointment" element={<PatientAppointment />} />
+          <Route path="/book-appointment" element={<Booking />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

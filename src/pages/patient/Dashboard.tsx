@@ -2,8 +2,7 @@ import api from "@/api";
 import { useEffect, useState } from "react";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
 import { usePatientStore } from "@/store/patient.store";
-import { columns } from "../../components/patient/TableColumns";
-import { DataTable } from "@/components/doctor/DataTable";
+import PatientHome from "./Homepage";
 
 export default function PatientDashboard() {
   const [consultations, setConsultations] = useState<[] | null>(null);
@@ -31,7 +30,9 @@ export default function PatientDashboard() {
               <LoadingSpinner />
             </div>
           ) : (
-            <DataTable columns={columns} data={consultations} />
+            // <DataTable columns={columns} data={consultations} />
+            // <Consultation />
+            <PatientHome />
           )
 
           // : consultations.length > 0 ? (
