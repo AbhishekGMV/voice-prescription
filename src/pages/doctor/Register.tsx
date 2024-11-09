@@ -16,7 +16,6 @@ import { z } from "zod";
 import api from "@/api";
 import { toast, useToast } from "../../components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
-import { Card } from "../../components/ui/card";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import axios from "axios";
 import {
@@ -103,119 +102,120 @@ export function DoctorRegister() {
   }
 
   return (
-    <Card className="w-full max-w-sm p-6">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="role"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Role</FormLabel>
-                <FormControl>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {roles.map((role, idx) => {
-                        return (
-                          <>
-                            <SelectItem key={idx} value={role.value}>
-                              {role.label}
-                            </SelectItem>
-                          </>
-                        );
-                      })}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="gender"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Gender</FormLabel>
-                <FormControl>
-                  <Select
-                    required
-                    onValueChange={field.onChange}
-                    value={field.value}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {genders.map((gender, idx) => {
-                        return (
-                          <SelectItem key={idx} value={gender.value}>
-                            {gender.label}
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="w-full max-w-sm p-2 space-y-2"
+      >
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="role"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Role</FormLabel>
+              <FormControl>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {roles.map((role, idx) => {
+                      return (
+                        <>
+                          <SelectItem key={idx} value={role.value}>
+                            {role.label}
                           </SelectItem>
-                        );
-                      })}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="phone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Phone</FormLabel>
-                <FormControl>
-                  <Input placeholder="Phone" {...field} />
-                </FormControl>
-                <FormDescription>
-                  We don't share your phone number with anyone
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input type="password" placeholder="Password" {...field} />
-                </FormControl>
-                <FormDescription>Password is encrypted</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit" disabled={doctorStore.loading}>
-            {doctorStore.loading ? (
-              <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-            ) : null}
-            Submit
-          </Button>
-        </form>
-      </Form>
-    </Card>
+                        </>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="gender"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Gender</FormLabel>
+              <FormControl>
+                <Select
+                  required
+                  onValueChange={field.onChange}
+                  value={field.value}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {genders.map((gender, idx) => {
+                      return (
+                        <SelectItem key={idx} value={gender.value}>
+                          {gender.label}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="phone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Phone</FormLabel>
+              <FormControl>
+                <Input placeholder="Phone" {...field} />
+              </FormControl>
+              <FormDescription>
+                We don't share your phone number with anyone
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <Input type="password" placeholder="Password" {...field} />
+              </FormControl>
+              <FormDescription>Password is encrypted</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit" className="w-full" disabled={doctorStore.loading}>
+          {doctorStore.loading ? (
+            <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+          ) : null}
+          Submit
+        </Button>
+      </form>
+    </Form>
   );
 }
 
@@ -300,50 +300,42 @@ export function DoctorSignatureUpload() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <Card className="grid w-full max-w-sm items-center gap-1.5 p-6">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="space-y-6"
-          >
-            <FormField
-              control={form.control}
-              name="sign"
-              render={() => (
-                <FormItem>
-                  <FormLabel>Signature</FormLabel>
-                  <FormControl>
-                    <Input id="sign" type="file" onChange={handleFileUpload} />
-                  </FormControl>
-                  <FormDescription>
-                    This will be used for prescriptions
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button
-              className="w-full"
-              type="submit"
-              disabled={doctorStore.loading}
-            >
-              {doctorStore.loading ? (
-                <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-              ) : null}
-              Submit
-            </Button>
-            <Button
-              className="w-full"
-              type="button"
-              variant={"secondary"}
-              onClick={handleLogin}
-            >
-              Skip for now
-            </Button>
-          </form>
-        </Form>
-      </Card>
-    </div>
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="w-full max-w-sm p-2 space-y-2"
+      >
+        <FormField
+          control={form.control}
+          name="sign"
+          render={() => (
+            <FormItem>
+              <FormLabel>Signature</FormLabel>
+              <FormControl>
+                <Input id="sign" type="file" onChange={handleFileUpload} />
+              </FormControl>
+              <FormDescription>
+                This will be used for prescriptions
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button className="w-full" type="submit" disabled={doctorStore.loading}>
+          {doctorStore.loading ? (
+            <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+          ) : null}
+          Submit
+        </Button>
+        <Button
+          className="w-full"
+          type="button"
+          variant={"secondary"}
+          onClick={handleLogin}
+        >
+          Skip for now
+        </Button>
+      </form>
+    </Form>
   );
 }

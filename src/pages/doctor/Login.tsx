@@ -16,7 +16,6 @@ import { z } from "zod";
 import api from "@/api";
 import { useToast } from "../../components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
-import { Card } from "../../components/ui/card";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import axios from "axios";
 import { DOCTOR } from "@/data/constants";
@@ -67,51 +66,45 @@ export function DoctorLogin() {
   }
 
   return (
-    <Card className="w-full max-w-sm p-6">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="user.phone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Phone</FormLabel>
-                <FormControl>
-                  <Input placeholder="Phone" {...field} />
-                </FormControl>
-                <FormDescription>
-                  We don't share your phone number with anyone
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="user.password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input type="password" placeholder="Password" {...field} />
-                </FormControl>
-                <FormDescription>Password is encryted</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button
-            className="w-full"
-            type="submit"
-            disabled={doctorStore.loading}
-          >
-            {doctorStore.loading ? (
-              <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-            ) : null}
-            Submit
-          </Button>
-        </form>
-      </Form>
-    </Card>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <FormField
+          control={form.control}
+          name="user.phone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Phone</FormLabel>
+              <FormControl>
+                <Input placeholder="Phone" {...field} />
+              </FormControl>
+              <FormDescription>
+                We don't share your phone number with anyone
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="user.password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <Input type="password" placeholder="Password" {...field} />
+              </FormControl>
+              <FormDescription>Password is encryted</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button className="w-full" type="submit" disabled={doctorStore.loading}>
+          {doctorStore.loading ? (
+            <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+          ) : null}
+          Submit
+        </Button>
+      </form>
+    </Form>
   );
 }
