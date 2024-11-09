@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/form";
 import { z } from "zod";
 import api from "@/api";
-import { useToast } from "../../components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import axios from "axios";
 import { usePatientStore } from "@/store/patient.store";

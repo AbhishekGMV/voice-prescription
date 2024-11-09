@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/form";
 import { z } from "zod";
 import api from "@/api";
-import { useToast } from "../../components/ui/use-toast";
+import { useToast } from "../../hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import axios from "axios";
@@ -22,8 +22,13 @@ import { PATIENT } from "@/data/constants";
 
 const formSchema = z.object({
   user: z.object({
-    phone: z.string().min(10).max(13),
-    password: z.string().min(1),
+    phone: z
+      .string()
+      .min(10, { message: "Invalid phone number format" })
+      .max(13, { message: "Invalid phone number format" }),
+    password: z
+      .string()
+      .min(3, { message: "Password must contain min 3 characters" }),
   }),
 });
 
@@ -54,6 +59,7 @@ export function PatientLogin() {
       if (axios.isAxiosError(err)) {
         message = err.response?.data.message;
       }
+      console.log(err);
       toast({
         title: "Error",
         description: message,
@@ -96,7 +102,7 @@ export function PatientLogin() {
               <FormControl>
                 <Input type="password" placeholder="Password" {...field} />
               </FormControl>
-              <FormDescription>Password is encryted</FormDescription>
+              <FormDescription>Password is encrypted</FormDescription>
               <FormMessage />
             </FormItem>
           )}

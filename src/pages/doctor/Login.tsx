@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form";
 import { z } from "zod";
 import api from "@/api";
-import { useToast } from "../../components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import axios from "axios";
