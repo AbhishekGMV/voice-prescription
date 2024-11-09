@@ -82,6 +82,11 @@ export function PatientRegister() {
       if (data.data && data.data.id) {
         const user = { ...data.data, phone };
         patientStore.setUser({ ...user, phone, password, name });
+        toast({
+          title: "Registration Successful!",
+          description: "Login with your password",
+          variant: "default",
+        });
         navigate("/", { state: { role: PATIENT.toLowerCase(), phone: phone } });
       }
     } catch (err) {
