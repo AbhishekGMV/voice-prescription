@@ -16,11 +16,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { usePatientStore } from "@/store/patient.store";
 import api from "@/api";
 import moment from "moment";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "@/hooks/use-toast";
+import { ReloadIcon } from "@radix-ui/react-icons";
+import { usePatientAppointmentStore } from "@/store/appointment.patient.store";
 
 export default function Booking() {
   const { user } = usePatientStore();
+  const appointmentStore = usePatientAppointmentStore();
   const { state } = useLocation();
+  const navigate = useNavigate();
   const doctor = state.doctor;
 
   const [availableSlots, setAvailableSlots] = useState([]);
@@ -76,7 +81,7 @@ export default function Booking() {
   };
 
   const handleBooking = async () => {
-    console.log(selectedSlot, user?.id, doctor.id);
+    appointmentStore.setLoading(true);
     if (!user || !doctor) {
       console.log("Error: ", { user }, { doctor });
     }
@@ -89,7 +94,15 @@ export default function Booking() {
       },
       { headers: { Authorization: `Bearer ${user?.token}`, id: user?.id } }
     );
-    console.log(result);
+    if (result.status === "success") {
+      toast({
+        title: "Booking confirmed!",
+        description: "Doctor details will appear on your dashboard",
+        variant: "success",
+      });
+      navigate("/patient/appointment");
+    }
+    appointmentStore.setLoading(false);
   };
 
   return (
@@ -166,13 +179,11 @@ export default function Booking() {
           </div>
           <Button
             disabled={!selectedDate || !selectedSlot}
-            onClick={
-              handleBooking
-              // alert(
-              //   `Appointment booked for ${format(selectedDate!, "MMMM d, yyyy")} at ${selectedSlot}`
-              // )
-            }
+            onClick={handleBooking}
           >
+            {appointmentStore.loading ? (
+              <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+            ) : null}
             Confirm Booking
           </Button>
         </CardFooter>

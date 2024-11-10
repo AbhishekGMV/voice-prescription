@@ -19,6 +19,10 @@
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
+    --success: #22c55e; /* Example green color */
+    --success-border: #16a34a;
+    --success-foreground: #ffffff;
+
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
