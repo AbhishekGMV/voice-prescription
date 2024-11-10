@@ -25,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
+import { Card } from "@/components/ui/card";
 
 export function DoctorRegister() {
   const doctorStore = useDoctorStore();
@@ -300,42 +301,55 @@ export function DoctorSignatureUpload() {
   }
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(handleSubmit)}
-        className="w-full max-w-sm p-2 space-y-2"
-      >
-        <FormField
-          control={form.control}
-          name="sign"
-          render={() => (
-            <FormItem>
-              <FormLabel>Signature</FormLabel>
-              <FormControl>
-                <Input id="sign" type="file" onChange={handleFileUpload} />
-              </FormControl>
-              <FormDescription>
-                This will be used for prescriptions
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button className="w-full" type="submit" disabled={doctorStore.loading}>
-          {doctorStore.loading ? (
-            <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-          ) : null}
-          Submit
-        </Button>
-        <Button
-          className="w-full"
-          type="button"
-          variant={"secondary"}
-          onClick={handleLogin}
-        >
-          Skip for now
-        </Button>
-      </form>
-    </Form>
+    <div className="flex justify-center min-h-screen items-center">
+      <Card className="w-full max-w-sm p-6">
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="w-full max-w-sm p-2 space-y-2"
+          >
+            <FormField
+              control={form.control}
+              name="sign"
+              render={() => (
+                <FormItem>
+                  <FormLabel>Signature</FormLabel>
+                  <FormControl>
+                    <Input
+                      id="sign"
+                      type="file"
+                      onChange={handleFileUpload}
+                      className="cursor-pointer"
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    This will be used for prescriptions
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button
+              className="w-full"
+              type="submit"
+              disabled={doctorStore.loading}
+            >
+              {doctorStore.loading ? (
+                <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+              ) : null}
+              Submit
+            </Button>
+            <Button
+              className="w-full"
+              type="button"
+              variant={"secondary"}
+              onClick={handleLogin}
+            >
+              Skip for now
+            </Button>
+          </form>
+        </Form>
+      </Card>
+    </div>
   );
 }

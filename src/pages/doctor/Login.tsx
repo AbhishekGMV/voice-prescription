@@ -93,7 +93,7 @@ export function DoctorLogin() {
               <FormControl>
                 <Input type="password" placeholder="Password" {...field} />
               </FormControl>
-              <FormDescription>Password is encryted</FormDescription>
+              <FormDescription>Password is encrypted</FormDescription>
               <FormMessage />
             </FormItem>
           )}

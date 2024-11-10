@@ -1,7 +1,5 @@
 import { useEffect } from "react";
 import api from "@/api";
-import { appointmentColumns } from "@/components/appointment/DoctorAppointmentColumns";
-import { DataTable } from "@/components/doctor/DataTable";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
 import { useDoctorAppointmentStore } from "@/store/appointment.store";
 import { usePatientStore } from "@/store/patient.store";
@@ -9,9 +7,11 @@ import { BookAppointmentDialogue } from "@/components/patient/BookAppointmentDia
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DoctorList from "../doctor/DoctorList";
+import AppointmentsList from "@/components/patient/AppointmentList";
 
 export default function PatientAppointment() {
   const { user } = usePatientStore();
+  console.log(user);
   const appointmentStore = useDoctorAppointmentStore();
 
   useEffect(() => {
@@ -19,7 +19,7 @@ export default function PatientAppointment() {
 
     (async () => {
       appointmentStore.setLoading(true);
-      const { data } = await api.get(`/appointment/doctor/${user.id}`, {
+      const { data } = await api.get(`/appointment/patient/${user.id}`, {
         headers: {
           Authorization: `Bearer ${user.token}`,
           id: user.id,
@@ -50,10 +50,7 @@ export default function PatientAppointment() {
               </div>
             ) : appointmentStore.appointments.length > 0 &&
               !appointmentStore.loading ? (
-              <DataTable
-                columns={appointmentColumns}
-                data={appointmentStore.appointments}
-              />
+              <AppointmentsList {...user} />
             ) : (
               <h3>No appointments found</h3>
             )}

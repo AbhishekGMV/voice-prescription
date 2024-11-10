@@ -8,6 +8,8 @@ export type Doctor = {
   token: string;
   name?: string;
   id: string;
+  role?: string;
+  imageUrl?: string;
   type: "patient" | "doctor" | null;
 };
 

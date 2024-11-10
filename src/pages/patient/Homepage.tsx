@@ -8,20 +8,22 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Calendar, Clock, FileText, Bell, Settings } from "lucide-react";
+import { Calendar, Clock, FileText } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function PatientHome() {
+  const navigate = useNavigate();
   return (
     <div className="container mx-auto py-8 px-4">
       <header className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Welcome, John Doe</h1>
         <div className="flex items-center space-x-4">
-          <Button variant="ghost" size="icon">
+          {/* <Button variant="ghost" size="icon">
             <Bell className="h-5 w-5" />
           </Button>
           <Button variant="ghost" size="icon">
             <Settings className="h-5 w-5" />
-          </Button>
+          </Button> */}
           <Avatar>
             <AvatarImage
               src="/placeholder.svg?height=40&width=40"
@@ -46,7 +48,7 @@ export default function PatientHome() {
           <CardFooter>
             <Button
               className="w-full"
-              onClick={() => (window.location.href = "/book-appointment")}
+              onClick={() => navigate("/patient/appointment")}
             >
               Book Now
             </Button>
@@ -65,7 +67,7 @@ export default function PatientHome() {
             <Button
               variant="outline"
               className="w-full"
-              onClick={() => (window.location.href = "/previous-appointments")}
+              onClick={() => navigate("/previous-appointments")}
             >
               View History
             </Button>
@@ -86,7 +88,7 @@ export default function PatientHome() {
             <Button
               variant="outline"
               className="w-full"
-              onClick={() => (window.location.href = "/consultation-records")}
+              onClick={() => navigate("/consultation-records")}
             >
               View Records
             </Button>

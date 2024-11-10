@@ -1,6 +1,4 @@
-"use client";
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { format, addDays } from "date-fns";
 import { Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -15,34 +13,54 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-const generateAvailableSlots = () => {
-  const slots: { [key: string]: string[] } = {};
-  const today = new Date();
-  for (let i = 0; i < 7; i++) {
-    const date = addDays(today, i);
-    const dateString = format(date, "yyyy-MM-dd");
-    slots[dateString] = [
-      "09:00 AM",
-      "10:00 AM",
-      "11:00 AM",
-      "02:00 PM",
-      "03:00 PM",
-      "04:00 PM",
-    ];
-  }
-  return slots;
-};
-
-const availableSlots = generateAvailableSlots();
+import { usePatientStore } from "@/store/patient.store";
+import api from "@/api";
+import moment from "moment";
+import { useLocation } from "react-router-dom";
 
 export default function Booking() {
+  const { user } = usePatientStore();
+  const { state } = useLocation();
+  const doctor = state.doctor;
+
+  const [availableSlots, setAvailableSlots] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      if (!user || !user.token || !doctor) return;
+      try {
+        const slots: { [key: string]: any[] } = {};
+
+        const { data: response } = await api.get(
+          `/availability/slots?id=${doctor.id}`,
+          {
+            headers: { Authorization: `Bearer ${user.token}`, id: user.id },
+          }
+        );
+
+        response.data.forEach((slot) => {
+          const startTime = moment(slot.startTime).format("yyyy-MM-DD");
+          if (!slots[startTime] || !slots[startTime].length) {
+            slots[startTime] = [];
+          }
+          slots[startTime].push({
+            id: slot.id,
+            time: moment(slot.startTime).format("HH:mm A"),
+          });
+        });
+        setAvailableSlots(slots);
+      } catch (err) {
+        console.log(err);
+      }
+    })();
+  }, []);
+
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     new Date()
   );
-  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<any>(null);
 
-  const handleDateSelect = (date: Date | undefined) => {
+  const handleDateSelect = async (date: Date | undefined) => {
     setSelectedDate(date);
     setSelectedSlot(null);
   };
@@ -57,6 +75,23 @@ export default function Booking() {
     return availableSlots[dateString] || [];
   };
 
+  const handleBooking = async () => {
+    console.log(selectedSlot, user?.id, doctor.id);
+    if (!user || !doctor) {
+      console.log("Error: ", { user }, { doctor });
+    }
+    const { data: result } = await api.post(
+      "/appointment/book",
+      {
+        patientId: user?.id,
+        doctorId: doctor.id,
+        slotId: selectedSlot.id,
+      },
+      { headers: { Authorization: `Bearer ${user?.token}`, id: user?.id } }
+    );
+    console.log(result);
+  };
+
   return (
     <div className="container mx-auto py-8 px-4">
       <Card className="max-w-4xl mx-auto">
@@ -65,15 +100,15 @@ export default function Booking() {
             <Avatar className="w-16 h-16">
               <AvatarImage
                 src="/placeholder.svg?height=60&width=60"
-                alt="Dr. Jane Smith"
+                alt={`Dr. ${doctor.name}`}
               />
               <AvatarFallback>JS</AvatarFallback>
             </Avatar>
             <div>
               <CardTitle className="text-2xl">
-                Book an Appointment with Dr. Jane Smith
+                Book an Appointment with Dr. {doctor.name}
               </CardTitle>
-              <CardDescription>Cardiologist • Central Hospital</CardDescription>
+              <CardDescription>{doctor.role}</CardDescription>
             </div>
           </div>
         </CardHeader>
@@ -85,9 +120,7 @@ export default function Booking() {
               selected={selectedDate}
               onSelect={handleDateSelect}
               className="rounded-md border shadow"
-              disabled={(date) =>
-                date < new Date() || date > addDays(new Date(), 30)
-              }
+              disabled={(date) => date > addDays(new Date(), 30)}
             />
           </div>
           <div className="space-y-4">
@@ -101,17 +134,17 @@ export default function Booking() {
             <div className="grid grid-cols-2 gap-2">
               {getAvailableSlots(selectedDate).map((slot) => (
                 <Button
-                  key={slot}
-                  variant={selectedSlot === slot ? "default" : "outline"}
+                  key={slot.id}
+                  variant={selectedSlot?.id === slot.id ? "default" : "outline"}
                   className={cn(
                     "justify-start",
-                    selectedSlot === slot &&
+                    selectedSlot?.id === slot.id &&
                       "bg-primary text-primary-foreground"
                   )}
                   onClick={() => handleSlotSelect(slot)}
                 >
                   <Clock className="mr-2 h-4 w-4" />
-                  {slot}
+                  {slot.time}
                 </Button>
               ))}
             </div>
@@ -127,16 +160,17 @@ export default function Booking() {
             {selectedDate && selectedSlot && (
               <>
                 Selected: {format(selectedDate, "MMMM d, yyyy")} at{" "}
-                {selectedSlot}
+                {selectedSlot.time}
               </>
             )}
           </div>
           <Button
             disabled={!selectedDate || !selectedSlot}
-            onClick={() =>
-              alert(
-                `Appointment booked for ${format(selectedDate!, "MMMM d, yyyy")} at ${selectedSlot}`
-              )
+            onClick={
+              handleBooking
+              // alert(
+              //   `Appointment booked for ${format(selectedDate!, "MMMM d, yyyy")} at ${selectedSlot}`
+              // )
             }
           >
             Confirm Booking
