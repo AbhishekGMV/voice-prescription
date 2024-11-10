@@ -13,6 +13,7 @@ import PatientAppointment from "./pages/patient/Appointment";
 import Booking from "./pages/patient/Booking";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
+import PatientConsultation from "./pages/patient/Consultation";
 
 function App() {
   return (
@@ -35,6 +36,10 @@ function App() {
         <Route path="/" element={<PatientAuth />}>
           <Route path="/patient/dashboard" element={<PatientDashboard />} />
           <Route path="/patient/appointment" element={<PatientAppointment />} />
+          <Route
+            path="/patient/consultation"
+            element={<PatientConsultation />}
+          />
           <Route path="/book-appointment" element={<Booking />} />
         </Route>
         <Route path="*" element={<NotFound />} />

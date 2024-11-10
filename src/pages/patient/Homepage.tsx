@@ -88,7 +88,7 @@ export default function PatientHome() {
             <Button
               variant="outline"
               className="w-full"
-              onClick={() => navigate("/consultation-records")}
+              onClick={() => navigate("/patient/consultation")}
             >
               View Records
             </Button>
