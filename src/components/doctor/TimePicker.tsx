@@ -96,7 +96,7 @@ const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>(
         </div>
       </div>
     );
-  }
+  },
 );
 
 // Set a display name for debugging

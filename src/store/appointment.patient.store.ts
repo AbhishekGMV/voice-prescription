@@ -23,5 +23,5 @@ export const usePatientAppointmentStore = create<AppointmentStore & Action>(
     setAppointments: (appointments: PatientAppointment[]) =>
       set(() => ({ appointments })),
     setLoading: (loading: boolean) => set(() => ({ loading })),
-  })
+  }),
 );

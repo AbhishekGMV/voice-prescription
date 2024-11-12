@@ -41,10 +41,12 @@ export default function DoctorList() {
               <Avatar className="w-16 h-16">
                 <AvatarImage src={doctor.imageUrl} alt={doctor.name} />
                 <AvatarFallback>
-                  {doctor.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")}
+                  {doctor && doctor.name
+                    ? doctor.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")
+                    : "??"}
                 </AvatarFallback>
               </Avatar>
               <div>

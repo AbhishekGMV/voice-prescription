@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import api from "@/api";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
 import { useDoctorAppointmentStore } from "@/store/appointment.store";
-import { usePatientStore } from "@/store/patient.store";
+import { Patient, usePatientStore } from "@/store/patient.store";
 import { BookAppointmentDialogue } from "@/components/patient/BookAppointmentDialogue";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -50,7 +50,7 @@ export default function PatientAppointment() {
               </div>
             ) : appointmentStore.appointments.length > 0 &&
               !appointmentStore.loading ? (
-              <AppointmentsList {...user} />
+              <AppointmentsList {...(user as Patient)} />
             ) : (
               <h3>No appointments found</h3>
             )}

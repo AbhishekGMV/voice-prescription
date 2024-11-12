@@ -21,7 +21,7 @@ function Schedule() {
         startTime: z.string(),
         endTime: z.string(),
         dayOfWeek: z.enum(DAYS_OF_WEEK),
-      })
+      }),
     ),
   });
 
@@ -65,14 +65,14 @@ function Schedule() {
           startTime: moment(availability.startTime).format("HH:mm"),
           endTime: moment(availability.endTime).format("HH:mm"),
           ...availability,
-        })
+        }),
       );
       availabilities.map(
         (schedule: z.infer<typeof availabilities>, idx: number) => {
           form.setValue(`schedule.${idx}.startTime`, schedule.startTime);
           form.setValue(`schedule.${idx}.endTime`, schedule.endTime);
           form.setValue(`schedule.${idx}.dayOfWeek`, schedule.dayOfWeek);
-        }
+        },
       );
     })();
   }, [user, form]);
@@ -80,7 +80,7 @@ function Schedule() {
   const handleTimeChange = (
     field: ControllerRenderProps<z.infer<typeof formSchema>>,
     newValue: string,
-    currValue: string
+    currValue: string,
   ) => {
     const updatedValue = moment(currValue)
       .set({

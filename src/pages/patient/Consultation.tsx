@@ -77,7 +77,7 @@ export default function PatientConsultation() {
     indexOfLastConsultation - consultationsPerPage;
   const currentConsultations = consultations.slice(
     indexOfFirstConsultation,
-    indexOfLastConsultation
+    indexOfLastConsultation,
   );
 
   const nextPage = () =>
@@ -194,7 +194,7 @@ export default function PatientConsultation() {
                       className="mt-4"
                       onClick={() =>
                         speakText(
-                          `Consultation details for ${consultation.doctorName}. Diagnosis: ${consultation.diagnosis}. Prescription: ${consultation.prescription}. Notes: ${consultation.notes}`
+                          `Consultation details for ${consultation.doctorName}. Diagnosis: ${consultation.diagnosis}. Prescription: ${consultation.prescription}. Notes: ${consultation.notes}`,
                         )
                       }
                     >

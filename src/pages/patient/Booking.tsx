@@ -28,29 +28,36 @@ export default function Booking() {
   const navigate = useNavigate();
   const doctor = state.doctor;
 
-  const [availableSlots, setAvailableSlots] = useState([]);
+  const [availableSlots, setAvailableSlots] = useState<{
+    [key: string]: Slot[];
+  }>({});
+
+  interface Slot {
+    id: string;
+    startTime: string;
+  }
 
   useEffect(() => {
     (async () => {
       if (!user || !user.token || !doctor) return;
       try {
-        const slots: { [key: string]: any[] } = {};
+        const slots: { [key: string]: Slot[] } = {};
 
         const { data: response } = await api.get(
           `/availability/slots?id=${doctor.id}`,
           {
             headers: { Authorization: `Bearer ${user.token}`, id: user.id },
-          }
+          },
         );
 
-        response.data.forEach((slot) => {
+        response.data.forEach((slot: Slot) => {
           const startTime = moment(slot.startTime).format("yyyy-MM-DD");
           if (!slots[startTime] || !slots[startTime].length) {
             slots[startTime] = [];
           }
           slots[startTime].push({
             id: slot.id,
-            time: moment(slot.startTime).format("HH:mm A"),
+            startTime: moment(slot.startTime).format("HH:mm A"),
           });
         });
         setAvailableSlots(slots);
@@ -61,16 +68,16 @@ export default function Booking() {
   }, []);
 
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
-    new Date()
+    new Date(),
   );
-  const [selectedSlot, setSelectedSlot] = useState<any>(null);
+  const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
 
   const handleDateSelect = async (date: Date | undefined) => {
     setSelectedDate(date);
     setSelectedSlot(null);
   };
 
-  const handleSlotSelect = (slot: string) => {
+  const handleSlotSelect = (slot: Slot) => {
     setSelectedSlot(slot);
   };
 
@@ -90,9 +97,9 @@ export default function Booking() {
       {
         patientId: user?.id,
         doctorId: doctor.id,
-        slotId: selectedSlot.id,
+        slotId: selectedSlot?.id,
       },
-      { headers: { Authorization: `Bearer ${user?.token}`, id: user?.id } }
+      { headers: { Authorization: `Bearer ${user?.token}`, id: user?.id } },
     );
     if (result.status === "success") {
       toast({
@@ -145,19 +152,19 @@ export default function Booking() {
               )}
             </h3>
             <div className="grid grid-cols-2 gap-2">
-              {getAvailableSlots(selectedDate).map((slot) => (
+              {getAvailableSlots(selectedDate).map((slot: Slot) => (
                 <Button
                   key={slot.id}
                   variant={selectedSlot?.id === slot.id ? "default" : "outline"}
                   className={cn(
                     "justify-start",
                     selectedSlot?.id === slot.id &&
-                      "bg-primary text-primary-foreground"
+                      "bg-primary text-primary-foreground",
                   )}
                   onClick={() => handleSlotSelect(slot)}
                 >
                   <Clock className="mr-2 h-4 w-4" />
-                  {slot.time}
+                  {slot.startTime}
                 </Button>
               ))}
             </div>
@@ -173,7 +180,7 @@ export default function Booking() {
             {selectedDate && selectedSlot && (
               <>
                 Selected: {format(selectedDate, "MMMM d, yyyy")} at{" "}
-                {selectedSlot.time}
+                {selectedSlot.startTime}
               </>
             )}
           </div>

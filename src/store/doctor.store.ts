@@ -44,6 +44,6 @@ export const useDoctorStore = create<Store & Action>()(
     {
       name: "user", // Key name in localStorage
       storage: createJSONStorage(() => localStorage),
-    }
-  )
+    },
+  ),
 );

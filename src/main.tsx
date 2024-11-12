@@ -6,5 +6,5 @@ import Layout from "./components/common/Layout.tsx";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <Layout>
     <App />
-  </Layout>
+  </Layout>,
 );

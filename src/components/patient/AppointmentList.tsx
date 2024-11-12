@@ -3,7 +3,6 @@ import { format } from "date-fns";
 import {
   Calendar,
   Clock,
-  Edit2,
   Trash2,
   ChevronLeft,
   ChevronRight,
@@ -11,29 +10,24 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import api from "@/api";
+import { Patient } from "@/store/patient.store";
+import { Doctor } from "@/store/doctor.store";
 
-// Mock data for appointments
-// const appointments = [
-//   {
-//     id: 1,
-//     doctorName: "Dr. John Doe",
-//     doctorAvatar: "/placeholder.svg?height=40&width=40",
-//     specialty: "Cardiologist",
-//     date: new Date(2023, 5, 15, 10, 30),
-//     status: "Confirmed",
-//   }
-// ];
+interface Slot {
+  startTime: string;
+}
+interface Appointment {
+  id: string;
+  doctor: Doctor;
+  slot: Slot;
+  status: string;
+  role: string;
+}
 
-export default function AppointmentsList(user: any) {
-  const [appointments, setAppointments] = useState<any[]>([]);
+export default function AppointmentsList(user: Patient | Doctor | null) {
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const appointmentsPerPage = 3;
   const totalPages = Math.ceil(appointments.length / appointmentsPerPage);
@@ -42,7 +36,7 @@ export default function AppointmentsList(user: any) {
   const indexOfFirstAppointment = indexOfLastAppointment - appointmentsPerPage;
   const currentAppointments = appointments.slice(
     indexOfFirstAppointment,
-    indexOfLastAppointment
+    indexOfLastAppointment,
   );
 
   useEffect(() => {
@@ -51,7 +45,7 @@ export default function AppointmentsList(user: any) {
         `/appointment/patient/${user?.id}`,
         {
           headers: { Authorization: `Bearer ${user?.token}`, id: user?.id },
-        }
+        },
       );
       console.log(result.data);
       setAppointments(result.data);
@@ -90,10 +84,12 @@ export default function AppointmentsList(user: any) {
                       alt={appointment.doctor.name}
                     />
                     <AvatarFallback>
-                      {appointment.doctor.name
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")}
+                      {appointment.doctor && appointment.doctor.name
+                        ? appointment.doctor.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")
+                        : "??"}
                     </AvatarFallback>
                   </Avatar>
                   <div>
@@ -122,24 +118,7 @@ export default function AppointmentsList(user: any) {
                   >
                     {appointment.status}
                   </Badge>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-8 w-8 p-0">
-                        <span className="sr-only">Open menu</span>
-                        <Edit2 className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem>
-                        <Edit2 className="mr-2 h-4 w-4" />
-                        <span>Edit Appointment</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="text-red-600">
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        <span>Cancel Appointment</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <Trash2 className="mr-2 h-4 w-4 cursor-pointer" />
                 </div>
               </div>
             </CardContent>
