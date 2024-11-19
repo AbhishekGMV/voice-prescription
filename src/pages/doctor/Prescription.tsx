@@ -14,6 +14,8 @@ import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { Button } from "../../components/ui/button";
 import { Alert } from "../../components/ui/alert";
+import { ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const invoices = [
   {
@@ -37,6 +39,7 @@ const invoices = [
 ];
 
 function ProcessPrescription() {
+  const navigate = useNavigate();
   function today() {
     return new Intl.DateTimeFormat("en-US", {
       year: "numeric",
@@ -47,6 +50,10 @@ function ProcessPrescription() {
   return (
     <>
       <div className="container bg-white shadow-xl m-auto">
+        <Button variant="ghost" className="mb-4" onClick={() => navigate(-1)}>
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back
+        </Button>
         <div className="doctor flex justify-between">
           <div>
             <h4 className="my-2 text-2xl text-blue-900 font-bold">Dr. Jon</h4>

@@ -2,7 +2,9 @@ import { create } from "zustand";
 
 export type DoctorAppointment = {
   patientName: string;
-  slot: string | number;
+  slot: {
+    startTime: string;
+  };
   date: string;
 };
 
@@ -23,5 +25,5 @@ export const useDoctorAppointmentStore = create<AppointmentStore & Action>(
     setAppointments: (appointments: DoctorAppointment[]) =>
       set(() => ({ appointments })),
     setLoading: (loading: boolean) => set(() => ({ loading })),
-  }),
+  })
 );

@@ -24,4 +24,10 @@ dist-ssr
 *.sw?
 
 .env
-.yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+!.yarn/cache
