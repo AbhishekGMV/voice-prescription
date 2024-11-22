@@ -13,7 +13,7 @@ import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
 import PatientConsultation from "./pages/patient/Consultation";
 import DoctorHomepage from "./pages/doctor/Dashboard";
-import DoctorAppointment from "./pages/doctor/Appointment";
+import DoctorAppointments from "./pages/doctor/Appointment";
 import DoctorConsultation from "./pages/doctor/Consultation";
 
 function App() {
@@ -27,7 +27,7 @@ function App() {
           <Route path="/doctor/sign" element={<DoctorSignatureUpload />} />
           <Route path="/doctor/dashboard" element={<DoctorHomepage />} />
           <Route path="/doctor/consultation" element={<DoctorConsultation />} />
-          <Route path="/doctor/appointment" element={<DoctorAppointment />} />
+          <Route path="/doctor/appointment" element={<DoctorAppointments />} />
           <Route path="/doctor/schedule" element={<Schedule />} />
           <Route
             path="/doctor/prescription"

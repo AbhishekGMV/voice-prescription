@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
-import { DoctorAppointment } from "@/store/appointment.store";
+import { DoctorAppointment } from "@/store/appointment.doctor.store";
 
 export const appointmentColumns: ColumnDef<DoctorAppointment>[] = [
   {

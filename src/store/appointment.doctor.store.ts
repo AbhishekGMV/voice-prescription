@@ -1,7 +1,10 @@
 import { create } from "zustand";
 
 export type DoctorAppointment = {
-  patientName: string;
+  id: string;
+  patient: {
+    name: string;
+  };
   slot: {
     startTime: string;
   };

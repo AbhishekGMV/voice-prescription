@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { addDays, format, startOfWeek, isSameDay } from "date-fns";
 import {
   Card,
@@ -12,49 +12,52 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ChevronLeft, ChevronRight, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import api from "@/api";
+import { useDoctorStore } from "@/store/doctor.store";
+import moment from "moment";
+import { DoctorAppointment } from "@/store/appointment.doctor.store";
 
-// Mock data for appointments
-const appointments = [
-  {
-    id: 1,
-    patientName: "John Doe",
-    time: "09:00 AM",
-    duration: "30 min",
-    type: "Check-up",
-  },
-  {
-    id: 2,
-    patientName: "Jane Smith",
-    time: "10:30 AM",
-    duration: "45 min",
-    type: "Consultation",
-  },
-  {
-    id: 3,
-    patientName: "Bob Johnson",
-    time: "02:00 PM",
-    duration: "1 hour",
-    type: "Surgery",
-  },
-  {
-    id: 4,
-    patientName: "Alice Brown",
-    time: "04:30 PM",
-    duration: "30 min",
-    type: "Follow-up",
-  },
-];
+type Appointment = {
+  id: number;
+  patientName: string;
+  time: string;
+  duration: string;
+  type: string;
+};
 
-export default function DoctorAppointment() {
+export default function DoctorAppointments() {
+  const { user } = useDoctorStore();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<Appointment | null>(null);
   const navigate = useNavigate();
 
   const startDate = startOfWeek(currentDate);
   const endDate = addDays(startDate, 6);
 
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(startDate, i));
+
+  useEffect(() => {
+    console.log("changed");
+    (async () => {
+      const { data: result } = await api.get(
+        `/appointment/doctor/${user?.id}?date=${moment(selectedDate).format("YYYY/MM/DD")}`,
+        { headers: { Authorization: `Bearer ${user?.token}`, id: user?.id } }
+      );
+      const data = result.data.map((appointment: DoctorAppointment) => {
+        return {
+          id: appointment.id,
+          patientName: appointment.patient.name,
+          time: moment(appointment.slot.startTime).format("HH:mm A"),
+          duration: "30 min",
+          type: "check-up",
+        };
+      });
+      setAppointments(data);
+    })();
+  }, [selectedDate]);
 
   const handlePrevWeek = () => setCurrentDate(addDays(currentDate, -7));
   const handleNextWeek = () => setCurrentDate(addDays(currentDate, 7));

@@ -24,10 +24,25 @@ import api from "@/api";
 import { useDoctorStore } from "@/store/doctor.store";
 import moment from "moment";
 
+type Appointment = {
+  id: number;
+  patient: {
+    name: string;
+  };
+  slot: {
+    startTime: string;
+  };
+  time: string;
+  duration: string;
+  type: string;
+  status: string;
+  reason: string;
+};
+
 export default function DoctorHomepage() {
   const navigate = useNavigate();
   const { user: doctor } = useDoctorStore();
-  const [appointments, setAppointments] = useState([]);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -40,7 +55,7 @@ export default function DoctorHomepage() {
           },
         }
       );
-      const data = result.data.map((appointment) => {
+      const data = result.data.map((appointment: Appointment) => {
         return {
           id: appointment.id,
           time: moment(appointment.slot.startTime).format("HH:mm A"),
@@ -107,7 +122,7 @@ export default function DoctorHomepage() {
     }
   };
 
-  const handleCreatePrescription = (patientId: number) => {
+  const handleCreatePrescription = () => {
     navigate(`/doctor/prescription`);
   };
 
@@ -175,7 +190,7 @@ export default function DoctorHomepage() {
             <CardContent className="p-0">
               <ScrollArea className="h-[500px] sm:h-[600px]">
                 <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-                  {appointments.map((appointment) => (
+                  {appointments.map((appointment: Appointment) => (
                     <li
                       key={appointment.id}
                       className="p-4 sm:p-6 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
@@ -186,10 +201,10 @@ export default function DoctorHomepage() {
                             <Avatar className="h-12 w-12 mr-4">
                               <AvatarImage
                                 src={`https://api.dicebear.com/6.x/initials/svg?seed=${appointment.patient}`}
-                                alt={appointment.patient}
+                                alt={appointment.patient.name}
                               />
                               <AvatarFallback>
-                                {appointment.patient
+                                {appointment.patient.name
                                   .split(" ")
                                   .map((n) => n[0])
                                   .join("")}
@@ -198,7 +213,7 @@ export default function DoctorHomepage() {
                           </div>
                           <div className="flex-grow min-w-0">
                             <p className="text-sm sm:text-base font-medium text-gray-900 dark:text-white truncate">
-                              {appointment.patient}
+                              {appointment.patient.name}
                             </p>
                             <div className="flex items-center space-x-2">
                               <Clock className="h-4 w-4 text-gray-400" />
@@ -219,9 +234,7 @@ export default function DoctorHomepage() {
                           </span>
                           {getAppointmentTypeIcon(appointment.type)}
                           <Button
-                            onClick={() =>
-                              handleCreatePrescription(appointment.id)
-                            }
+                            onClick={handleCreatePrescription}
                             variant="default"
                             size="sm"
                             className="bg-blue-500 hover:bg-blue-600 text-white"

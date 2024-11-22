@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import api from "@/api";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
-import { useDoctorAppointmentStore } from "@/store/appointment.store";
+import { useDoctorAppointmentStore } from "@/store/appointment.doctor.store";
 import { Patient, usePatientStore } from "@/store/patient.store";
 import { BookAppointmentDialogue } from "@/components/patient/BookAppointmentDialogue";
 
