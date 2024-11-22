@@ -23,15 +23,11 @@ import { Link, useNavigate } from "react-router-dom";
 import api from "@/api";
 import { useDoctorStore } from "@/store/doctor.store";
 import moment from "moment";
+import { DoctorAppointment } from "@/store/appointment.doctor.store";
 
 type Appointment = {
   id: number;
-  patient: {
-    name: string;
-  };
-  slot: {
-    startTime: string;
-  };
+  patient: string;
   time: string;
   duration: string;
   type: string;
@@ -55,7 +51,7 @@ export default function DoctorHomepage() {
           },
         }
       );
-      const data = result.data.map((appointment: Appointment) => {
+      const data = result.data.map((appointment: DoctorAppointment) => {
         return {
           id: appointment.id,
           time: moment(appointment.slot.startTime).format("HH:mm A"),
@@ -201,10 +197,10 @@ export default function DoctorHomepage() {
                             <Avatar className="h-12 w-12 mr-4">
                               <AvatarImage
                                 src={`https://api.dicebear.com/6.x/initials/svg?seed=${appointment.patient}`}
-                                alt={appointment.patient.name}
+                                alt={appointment.patient}
                               />
                               <AvatarFallback>
-                                {appointment.patient.name
+                                {appointment.patient
                                   .split(" ")
                                   .map((n) => n[0])
                                   .join("")}
@@ -213,7 +209,7 @@ export default function DoctorHomepage() {
                           </div>
                           <div className="flex-grow min-w-0">
                             <p className="text-sm sm:text-base font-medium text-gray-900 dark:text-white truncate">
-                              {appointment.patient.name}
+                              {appointment.patient}
                             </p>
                             <div className="flex items-center space-x-2">
                               <Clock className="h-4 w-4 text-gray-400" />
