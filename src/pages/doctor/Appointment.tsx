@@ -40,7 +40,6 @@ export default function DoctorAppointments() {
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(startDate, i));
 
   useEffect(() => {
-    console.log("changed");
     (async () => {
       const { data: result } = await api.get(
         `/appointment/doctor/${user?.id}?date=${moment(selectedDate).format("YYYY/MM/DD")}`,

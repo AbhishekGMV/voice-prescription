@@ -73,14 +73,28 @@ export default function Schedule() {
     const fetchAvailability = async () => {
       if (!user) return;
       try {
-        const { data } = await api.get("/availability", {
+        const { data: result } = await api.get("/availability", {
           headers: {
             Authorization: `Bearer ${user.token}`,
             id: user.id,
           },
         });
-        const availabilities = data?.data.map(
-          (availability: z.infer<typeof data.data>) => ({
+        const isCurrentWeek = result.data.some(
+          (availability: z.infer<typeof result.data>) =>
+            moment(availability.startTime).format("YYYY-MM-DD") ===
+            moment().startOf("isoWeek").format("YYYY-MM-DD")
+        );
+        if (!isCurrentWeek) {
+          toast({
+            variant: "default",
+            title: "Set your schedule of this week",
+            description:
+              "Your current week schedule is not set. Save changes to confirm schedule",
+          });
+          return;
+        }
+        const availabilities = result?.data.map(
+          (availability: z.infer<typeof result.data>) => ({
             startTime: moment(availability.startTime).format("HH:mm"),
             endTime: moment(availability.endTime).format("HH:mm"),
             ...availability,
@@ -125,7 +139,6 @@ export default function Schedule() {
     try {
       const data = {
         availabilities: schedule,
-        weekStart: moment().startOf("isoWeek").format("YYYY-MM-DD").toString(),
         interval: 30,
       };
       await api.post("/availability", data, {
