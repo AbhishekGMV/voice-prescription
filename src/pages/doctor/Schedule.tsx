@@ -140,6 +140,7 @@ export default function Schedule() {
       const data = {
         availabilities: schedule,
         interval: 30,
+        weekStart: moment().startOf("isoWeek").format(),
       };
       await api.post("/availability", data, {
         headers: {

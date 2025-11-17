@@ -50,20 +50,22 @@ export default function DoctorList() {
                 </AvatarFallback>
               </Avatar>
               <div>
-                <CardTitle>{doctor.name}</CardTitle>
+                <CardTitle className="capitalize py-2">
+                  Dr. {doctor.name}
+                </CardTitle>
                 <Badge variant="secondary" className="mt-1">
                   {doctor?.role}
                 </Badge>
               </div>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">now</p>
+              <p className="text-sm text-muted-foreground">Available now</p>
             </CardContent>
             <CardFooter className="mt-auto">
               <Button
                 className="w-full"
                 onClick={() =>
-                  navigate("/book-appointment", { state: { doctor } })
+                  navigate("/patient/book-appointment", { state: { doctor } })
                 }
               >
                 Book Appointment

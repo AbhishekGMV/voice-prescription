@@ -67,7 +67,7 @@ export default function PatientHome() {
             <Button
               variant="outline"
               className="w-full"
-              onClick={() => navigate("/previous-appointments")}
+              onClick={() => navigate("/patient/previous-appointments")}
             >
               View History
             </Button>

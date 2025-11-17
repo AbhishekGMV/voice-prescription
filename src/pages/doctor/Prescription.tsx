@@ -14,8 +14,9 @@ import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { Button } from "../../components/ui/button";
 import { Alert } from "../../components/ui/alert";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, MicIcon, MicOffIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
 
 const invoices = [
   {
@@ -40,6 +41,46 @@ const invoices = [
 
 function ProcessPrescription() {
   const navigate = useNavigate();
+  const [toggleMic, setToggleMic] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef(null);
+
+  useEffect(() => {
+    if (
+      (typeof window !== "undefined" && "SpeechRecognition" in window) ||
+      "webkitSpeechRecognition" in window
+    ) {
+      const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = true;
+      recognitionRef.current.interimResults = true;
+
+      recognitionRef.current.onresult = (event) => {
+        const current = event.resultIndex;
+        const transcript = event.results[current][0].transcript;
+        console.log(transcript);
+      };
+    }
+
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+    };
+  }, []);
+
+  const toggleListening = () => {
+    setToggleMic(!toggleMic);
+
+    if (isListening) {
+      recognitionRef.current.stop();
+    } else {
+      recognitionRef.current.start();
+    }
+    setIsListening(!isListening);
+  };
+
   function today() {
     return new Intl.DateTimeFormat("en-US", {
       year: "numeric",
@@ -71,6 +112,28 @@ function ProcessPrescription() {
             <div>Phone: 9123132122</div>
           </div>
           <div className="text-lg">Date: {today()}</div>
+          <Button
+            variant={toggleMic ? "destructive" : "default"}
+            onClick={() => {
+              toggleListening();
+            }}
+            className="relative z-10 overflow-hidden"
+          >
+            {toggleMic ? (
+              <>
+                <MicIcon />
+                Stop listening{" "}
+              </>
+            ) : (
+              <>
+                <MicOffIcon /> Start listening
+              </>
+            )}
+            <div
+              className="absolute inset-0 bg-white opacity-50 rounded animate-slide"
+              style={{ zIndex: 0 }}
+            ></div>
+          </Button>
         </div>
         <div>
           <Alert>Diagnosis: Fever</Alert>
