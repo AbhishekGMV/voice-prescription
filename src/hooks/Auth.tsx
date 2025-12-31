@@ -4,21 +4,22 @@ import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
 export const DoctorAuth = () => {
-  const { user } = useDoctorStore();
+  const { user, authChecked, isAuthenticated, fetchUser } = useDoctorStore();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user) {
-      return navigate("/");
-    }
+    fetchUser();
   }, []);
+
+  useEffect(() => {
+    if (!authChecked) return;
+    if (!user || !isAuthenticated) {
+      navigate("/");
+    }
+  }, [user, authChecked, isAuthenticated]);
 
   return (
     <>
-      {/* <div className="m-6 flex justify-center"> */}
-      {/* <MainNav user={user} className="mx-6" /> */}
-      {/* <UserNav user={user} handleUserLogout={handleUserLogout} />{" "} */}
-      {/* </div> */}
       <Outlet />
     </>
   );

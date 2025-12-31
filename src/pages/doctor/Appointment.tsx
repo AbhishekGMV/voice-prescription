@@ -41,22 +41,24 @@ export default function DoctorAppointments() {
 
   useEffect(() => {
     (async () => {
+      if (!user) return;
+
       const { data: result } = await api.get(
-        `/appointment/doctor/${user?.id}?date=${moment(selectedDate).format("YYYY/MM/DD")}`,
-        { headers: { Authorization: `Bearer ${user?.token}`, id: user?.id } }
+        `/appointment/doctor/${user.id}?date=${moment(selectedDate).format("YYYY/MM/DD")}`
       );
       const data = result.data.map((appointment: DoctorAppointment) => {
+        console.log("Appointment data:", appointment);
         return {
           id: appointment.id,
           patientName: appointment.patient.name,
-          time: moment(appointment.slot.startTime).format("HH:mm A"),
+          time: moment(appointment.startTime).utc().format("HH:mm A"),
           duration: "30 min",
-          type: "check-up",
+          type: appointment.status,
         };
       });
       setAppointments(data);
     })();
-  }, [selectedDate]);
+  }, [selectedDate, user]);
 
   const handlePrevWeek = () => setCurrentDate(addDays(currentDate, -7));
   const handleNextWeek = () => setCurrentDate(addDays(currentDate, 7));

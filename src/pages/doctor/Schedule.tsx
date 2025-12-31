@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm, useFieldArray, ControllerRenderProps } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import moment, { unitOfTime } from "moment";
+import moment from "moment";
 import { ReloadIcon, ArrowLeftIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
 import {
@@ -33,7 +33,7 @@ const formSchema = z.object({
     z.object({
       startTime: z.string(),
       endTime: z.string(),
-      dayOfWeek: z.enum(DAYS_OF_WEEK),
+      dayOfWeek: z.number(),
     })
   ),
 });
@@ -46,20 +46,10 @@ export default function Schedule() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      schedule: DAYS_OF_WEEK.map((day, idx) => ({
-        dayOfWeek: day,
-        startTime: moment()
-          .startOf("isoWeek" as unitOfTime.StartOf)
-          .add(idx, "days")
-          .set("hours", 9)
-          .set("minutes", 0)
-          .format(),
-        endTime: moment()
-          .startOf("isoWeek" as unitOfTime.StartOf)
-          .add(idx, "days")
-          .set("hours", 18)
-          .set("minutes", 0)
-          .format(),
+      schedule: DAYS_OF_WEEK.map((idx) => ({
+        dayOfWeek: moment().day(idx).day(),
+        startTime: "09:00",
+        endTime: "18:00",
       })),
     },
   });
@@ -73,31 +63,12 @@ export default function Schedule() {
     const fetchAvailability = async () => {
       if (!user) return;
       try {
-        const { data: result } = await api.get("/availability", {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-            id: user.id,
-          },
-        });
-        const isCurrentWeek = result.data.some(
-          (availability: z.infer<typeof result.data>) =>
-            moment(availability.startTime).format("YYYY-MM-DD") ===
-            moment().startOf("isoWeek").format("YYYY-MM-DD")
-        );
-        if (!isCurrentWeek) {
-          toast({
-            variant: "default",
-            title: "Set your schedule of this week",
-            description:
-              "Your current week schedule is not set. Save changes to confirm schedule",
-          });
-          return;
-        }
-        const availabilities = result?.data.map(
+        const { data: result } = await api.get("/doctor/availability");
+        const availabilities = result.data.map(
           (availability: z.infer<typeof result.data>) => ({
-            startTime: moment(availability.startTime).format("HH:mm"),
-            endTime: moment(availability.endTime).format("HH:mm"),
             ...availability,
+            startTime: moment.utc(availability.startTime).format("HH:mm"),
+            endTime: moment.utc(availability.endTime).format("HH:mm"),
           })
         );
         availabilities.forEach(
@@ -120,34 +91,19 @@ export default function Schedule() {
     fetchAvailability();
   }, [user, form, toast]);
 
-  const handleTimeChange = (
-    field: ControllerRenderProps<z.infer<typeof formSchema>>,
-    newValue: string,
-    currValue: string
-  ) => {
-    const updatedValue = moment(currValue)
-      .set({
-        hour: moment(newValue, "HH:mm").hour(),
-        minute: moment(newValue, "HH:mm").minute(),
-      })
-      .format();
-    field.onChange(updatedValue);
-  };
-
   const onSubmit = async ({ schedule }: z.infer<typeof formSchema>) => {
     if (!user) return;
     try {
       const data = {
-        availabilities: schedule,
+        weeklyAvailability: schedule.map((slot) => ({
+          dayOfWeek: slot.dayOfWeek,
+          startTime: slot.startTime,
+          endTime: slot.endTime,
+        })),
+        doctorId: user.id,
         interval: 30,
-        weekStart: moment().startOf("isoWeek").format(),
       };
-      await api.post("/availability", data, {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-          id: user.id,
-        },
-      });
+      await api.post("/doctor/availability", data);
       toast({
         title: "Success",
         description: "Your schedule has been updated successfully.",
@@ -174,7 +130,10 @@ export default function Schedule() {
               {scheduleFields.map((schedule, idx) => (
                 <div key={idx} className="flex items-center space-x-4">
                   <div className="w-20 font-medium capitalize">
-                    {schedule.dayOfWeek.substring(0, 3)}
+                    {moment()
+                      .day(schedule.dayOfWeek)
+                      .format("dddd")
+                      .substring(0, 3)}
                   </div>
                   <FormField
                     control={form.control}
@@ -186,14 +145,8 @@ export default function Schedule() {
                           <Input
                             {...field}
                             type="time"
-                            onChange={(e) =>
-                              handleTimeChange(
-                                field,
-                                e.target.value,
-                                field.value
-                              )
-                            }
-                            value={moment(field.value).format("HH:mm")}
+                            onChange={(e) => field.onChange(e.target.value)}
+                            value={field.value}
                           />
                         </FormControl>
                       </FormItem>
@@ -209,14 +162,8 @@ export default function Schedule() {
                           <Input
                             {...field}
                             type="time"
-                            onChange={(e) =>
-                              handleTimeChange(
-                                field,
-                                e.target.value,
-                                field.value
-                              )
-                            }
-                            value={moment(field.value).format("HH:mm")}
+                            onChange={(e) => field.onChange(e.target.value)}
+                            value={field.value}
                           />
                         </FormControl>
                       </FormItem>

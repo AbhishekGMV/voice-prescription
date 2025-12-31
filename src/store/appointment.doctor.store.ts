@@ -5,9 +5,7 @@ export type DoctorAppointment = {
   patient: {
     name: string;
   };
-  slot: {
-    startTime: string;
-  };
+  startTime: string;
   status: string;
   date: string;
 };

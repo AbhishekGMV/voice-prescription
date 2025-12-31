@@ -45,24 +45,27 @@ export function DoctorLogin() {
       const { data } = await api.post("/doctor/login", {
         user,
       });
+
       if (data.data && data.data.token) {
-        const user = { ...data.data, type: DOCTOR.toLowerCase() };
-        doctorStore.setUser(user);
-        navigate("/doctor/dashboard");
+        doctorStore.setLoading(false);
+        return navigate("/doctor/dashboard");
       }
+      throw new Error("Invalid response from server");
     } catch (err) {
+      doctorStore.setLoading(false);
+
       let message = (err as Error).message || "An error occurred";
       if (axios.isAxiosError(err)) {
         message = err.response?.data.message;
       }
       toast({
         title: "Error",
-        description: message,
+        description: message ?? "Something went wrong.",
         variant: "destructive",
       });
+    } finally {
+      doctorStore.setLoading(false);
     }
-
-    doctorStore.setLoading(false);
   }
 
   return (

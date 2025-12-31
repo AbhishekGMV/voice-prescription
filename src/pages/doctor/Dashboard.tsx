@@ -41,20 +41,15 @@ export default function DoctorHomepage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
 
   useEffect(() => {
+    if (!doctor) return;
     (async () => {
       const { data: result } = await api.get(
-        `/appointment/doctor/${doctor?.id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${doctor?.token}`,
-            id: doctor?.id,
-          },
-        }
+        `/appointment/doctor/${doctor.id}`
       );
       const data = result.data.map((appointment: DoctorAppointment) => {
         return {
           id: appointment.id,
-          time: moment(appointment.slot.startTime).format("HH:mm A"),
+          time: moment(appointment.startTime).format("HH:mm A"),
           patient: appointment.patient.name,
           reason: "Follow up",
           status: appointment.status,
@@ -63,7 +58,7 @@ export default function DoctorHomepage() {
       });
       setAppointments(data);
     })();
-  }, []);
+  }, [doctor]);
 
   const NavLinks = () => (
     <>
