@@ -18,7 +18,6 @@ import { useNavigate } from "react-router-dom";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import axios from "axios";
 import { usePatientStore } from "@/store/patient.store";
-import { PATIENT } from "@/data/constants";
 
 const formSchema = z.object({
   user: z.object({
@@ -50,11 +49,12 @@ export function PatientLogin() {
         user,
       });
       if (data.data && data.data.token) {
-        const user = { ...data.data, type: PATIENT.toLowerCase() };
-        patientStore.setUser({ ...user });
-        navigate("/patient/dashboard");
+        patientStore.setLoading(false);
+        return navigate("/patient/dashboard");
       }
+      throw new Error("Invalid response from server");
     } catch (err) {
+      patientStore.setLoading(false);
       let message = (err as Error).message || "An error occurred";
       if (axios.isAxiosError(err)) {
         message = err.response?.data.message;
@@ -62,12 +62,12 @@ export function PatientLogin() {
       console.log(err);
       toast({
         title: "Error",
-        description: message,
+        description: message ?? "Something went wrong.",
         variant: "destructive",
       });
+    } finally {
+      patientStore.setLoading(false);
     }
-
-    patientStore.setLoading(false);
   }
 
   return (

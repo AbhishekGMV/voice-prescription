@@ -27,50 +27,30 @@ export default function Booking() {
   const { state } = useLocation();
   const navigate = useNavigate();
   const doctor = state.doctor;
-
-  const [availableSlots, setAvailableSlots] = useState<{
-    [key: string]: Slot[];
-  }>({});
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+    new Date()
+  );
+  const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
+  const [availableSlots, setAvailableSlots] = useState<Slot[]>([]);
 
   interface Slot {
-    id: string;
     startTime: string;
+    endTime: string;
   }
 
   useEffect(() => {
     (async () => {
-      if (!user || !user.token || !doctor) return;
+      if (!user || !doctor) return;
       try {
-        const slots: { [key: string]: Slot[] } = {};
-
         const { data: response } = await api.get(
-          `/availability/slots?id=${doctor.id}`,
-          {
-            headers: { Authorization: `Bearer ${user.token}`, id: user.id },
-          },
+          `/doctor/${doctor.id}/slots?date=${moment(selectedDate).format("YYYY-MM-DD")}`
         );
-
-        response.data.forEach((slot: Slot) => {
-          const startTime = moment(slot.startTime).format("yyyy-MM-DD");
-          if (!slots[startTime] || !slots[startTime].length) {
-            slots[startTime] = [];
-          }
-          slots[startTime].push({
-            id: slot.id,
-            startTime: moment(slot.startTime).format("HH:mm A"),
-          });
-        });
-        setAvailableSlots(slots);
+        setAvailableSlots(response.data.slots);
       } catch (err) {
         console.log(err);
       }
     })();
-  }, []);
-
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
-    new Date(),
-  );
-  const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
+  }, [user, selectedDate]);
 
   const handleDateSelect = async (date: Date | undefined) => {
     setSelectedDate(date);
@@ -81,26 +61,16 @@ export default function Booking() {
     setSelectedSlot(slot);
   };
 
-  const getAvailableSlots = (date: Date | undefined) => {
-    if (!date) return [];
-    const dateString = format(date, "yyyy-MM-dd");
-    return availableSlots[dateString] || [];
-  };
-
   const handleBooking = async () => {
     appointmentStore.setLoading(true);
-    if (!user || !doctor) {
-      console.log("Error: ", { user }, { doctor });
+    if (!user || !doctor || !selectedSlot) {
+      return;
     }
-    const { data: result } = await api.post(
-      "/appointment/book",
-      {
-        patientId: user?.id,
-        doctorId: doctor.id,
-        slotId: selectedSlot?.id,
-      },
-      { headers: { Authorization: `Bearer ${user?.token}`, id: user?.id } },
-    );
+    const { data: result } = await api.post("/appointment/book", {
+      doctorId: doctor.id,
+      startTime: selectedSlot.startTime,
+      endTime: selectedSlot.endTime,
+    });
     if (result.status === "success") {
       toast({
         title: "Booking confirmed!",
@@ -152,23 +122,23 @@ export default function Booking() {
               )}
             </h3>
             <div className="grid grid-cols-2 gap-2">
-              {getAvailableSlots(selectedDate).map((slot: Slot) => (
+              {availableSlots.map((slot: Slot) => (
                 <Button
-                  key={slot.id}
-                  variant={selectedSlot?.id === slot.id ? "default" : "outline"}
-                  className={cn(
-                    "justify-start",
-                    selectedSlot?.id === slot.id &&
-                      "bg-primary text-primary-foreground",
-                  )}
+                  key={slot.startTime}
+                  // variant={selectedSlot?.id === slot.id ? "default" : "outline"}
+                  // className={cn(
+                  //   "justify-start",
+                  //   selectedSlot?.id === slot.id &&
+                  //     "bg-primary text-primary-foreground"
+                  // )}
                   onClick={() => handleSlotSelect(slot)}
                 >
                   <Clock className="mr-2 h-4 w-4" />
-                  {slot.startTime}
+                  {moment(slot.startTime).format("hh:mm A")}
                 </Button>
               ))}
             </div>
-            {getAvailableSlots(selectedDate).length === 0 && selectedDate && (
+            {availableSlots.length === 0 && selectedDate && (
               <p className="text-center text-muted-foreground mt-4">
                 No available slots for this date
               </p>
@@ -180,7 +150,7 @@ export default function Booking() {
             {selectedDate && selectedSlot && (
               <>
                 Selected: {format(selectedDate, "MMMM d, yyyy")} at{" "}
-                {selectedSlot.startTime}
+                {moment(selectedSlot.startTime).format("hh:mm A")}
               </>
             )}
           </div>

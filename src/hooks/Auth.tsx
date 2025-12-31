@@ -1,10 +1,13 @@
+import { DOCTOR } from "@/data/constants";
 import { useDoctorStore } from "@/store/doctor.store";
 import { usePatientStore } from "@/store/patient.store";
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
-export const DoctorAuth = () => {
-  const { user, authChecked, isAuthenticated, fetchUser } = useDoctorStore();
+export const Auth = ({ type }: { type: string }) => {
+  const store = type === DOCTOR ? useDoctorStore() : usePatientStore();
+
+  const { user, authChecked, isAuthenticated, fetchUser } = store;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,27 +23,6 @@ export const DoctorAuth = () => {
 
   return (
     <>
-      <Outlet />
-    </>
-  );
-};
-
-export const PatientAuth = () => {
-  const { user } = usePatientStore();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!user) {
-      return navigate("/");
-    }
-  }, []);
-
-  return (
-    <>
-      {/* <div className="m-6 flex justify-center">
-        <MainNav user={user} className="mx-6" />
-        <UserNav user={user} handleUserLogout={handleUserLogout} />{" "}
-      </div> */}
       <Outlet />
     </>
   );

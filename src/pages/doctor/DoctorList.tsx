@@ -11,22 +11,15 @@ import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import api from "@/api";
-import { usePatientStore } from "@/store/patient.store";
 import { Doctor } from "@/store/doctor.store";
 
 export default function DoctorList() {
   const navigate = useNavigate();
-  const { user } = usePatientStore();
   const [doctors, setDoctors] = useState<Doctor[]>([]);
 
   useEffect(() => {
     (async () => {
-      const { data: result } = await api.get("/doctor", {
-        headers: {
-          Authorization: `Bearer ${user?.token}`,
-          id: user?.id,
-        },
-      });
+      const { data: result } = await api.get("/doctor");
       setDoctors(result.data);
     })();
   }, []);

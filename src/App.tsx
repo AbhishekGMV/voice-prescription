@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NotFound from "./pages/NotFound";
 import "./index.css";
-import { DoctorAuth, PatientAuth } from "./hooks/Auth";
+import { Auth } from "./hooks/Auth";
 import ProcessPrescription from "./pages/doctor/Prescription";
 import { DoctorSignatureUpload } from "./pages/doctor/Register";
 import Schedule from "./pages/doctor/Schedule";
@@ -16,6 +16,7 @@ import DoctorHomepage from "./pages/doctor/Dashboard";
 import DoctorAppointments from "./pages/doctor/Appointment";
 import DoctorConsultation from "./pages/doctor/Consultation";
 import AppointmentHistory from "./pages/patient/AppointmentHistory";
+import { DOCTOR, PATIENT } from "./data/constants";
 
 function App() {
   return (
@@ -24,7 +25,7 @@ function App() {
         <Route path="/" element={<Signin />} />
         <Route path="/register" element={<Signup />} />
 
-        <Route path="/" element={<DoctorAuth />}>
+        <Route path="/" element={<Auth type={DOCTOR} />}>
           <Route path="/doctor/sign" element={<DoctorSignatureUpload />} />
           <Route path="/doctor/dashboard" element={<DoctorHomepage />} />
           <Route path="/doctor/consultation" element={<DoctorConsultation />} />
@@ -36,7 +37,7 @@ function App() {
           />
         </Route>
         <Route path="/patient/login" element={<PatientLogin />} />
-        <Route path="/" element={<PatientAuth />}>
+        <Route path="/" element={<Auth type={PATIENT} />}>
           <Route path="/patient/dashboard" element={<PatientDashboard />} />
           <Route path="/patient/appointment" element={<PatientAppointment />} />
           <Route

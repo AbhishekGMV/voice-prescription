@@ -18,7 +18,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import axios from "axios";
-import { DOCTOR } from "@/data/constants";
 
 const formSchema = z.object({
   user: z.object({
