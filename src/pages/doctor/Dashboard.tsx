@@ -23,37 +23,30 @@ import { Link, useNavigate } from "react-router-dom";
 import api from "@/api";
 import { useDoctorStore } from "@/store/doctor.store";
 import moment from "moment";
-import { DoctorAppointment } from "@/store/appointment.doctor.store";
-
-type Appointment = {
-  id: number;
-  patient: string;
-  time: string;
-  duration: string;
-  type: string;
-  status: string;
-  reason: string;
-};
+import {
+  DoctorAppointment,
+  useDoctorAppointmentStore,
+} from "@/store/appointment.doctor.store";
 
 export default function DoctorHomepage() {
   const navigate = useNavigate();
   const { user: doctor } = useDoctorStore();
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const { appointments, setAppointments } = useDoctorAppointmentStore();
 
   useEffect(() => {
     if (!doctor) return;
     (async () => {
       const { data: result } = await api.get(
-        `/appointment/doctor/${doctor.id}`
+        `/appointment/doctor/${doctor.id}?date=${moment().format("YYYY-MM-DD")}`
       );
       const data = result.data.map((appointment: DoctorAppointment) => {
         return {
           id: appointment.id,
-          time: moment(appointment.startTime).format("HH:mm A"),
-          patient: appointment.patient.name,
-          reason: "Follow up",
+          startTime: moment(appointment.startTime).utc().format("HH:mm A"),
+          patient: {
+            ...appointment.patient,
+          },
           status: appointment.status,
-          type: "In-person",
         };
       });
       setAppointments(data);
@@ -113,8 +106,8 @@ export default function DoctorHomepage() {
     }
   };
 
-  const handleCreatePrescription = () => {
-    navigate(`/doctor/prescription`);
+  const handleCreatePrescription = (appointmentId: any) => {
+    navigate(`/doctor/${appointmentId}/prescription`);
   };
 
   return (
@@ -181,7 +174,7 @@ export default function DoctorHomepage() {
             <CardContent className="p-0">
               <ScrollArea className="h-[500px] sm:h-[600px]">
                 <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-                  {appointments.map((appointment: Appointment) => (
+                  {appointments.map((appointment: DoctorAppointment) => (
                     <li
                       key={appointment.id}
                       className="p-4 sm:p-6 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
@@ -191,30 +184,27 @@ export default function DoctorHomepage() {
                           <div className="flex-shrink-0">
                             <Avatar className="h-12 w-12 mr-4">
                               <AvatarImage
-                                src={`https://api.dicebear.com/6.x/initials/svg?seed=${appointment.patient}`}
-                                alt={appointment.patient}
+                                src={`https://api.dicebear.com/6.x/initials/svg?seed=${appointment.patient.name}`}
+                                alt={appointment.patient.name}
                               />
                               <AvatarFallback>
-                                {appointment.patient
+                                {appointment.patient.name
                                   .split(" ")
-                                  .map((n) => n[0])
+                                  .map((n: string) => n[0])
                                   .join("")}
                               </AvatarFallback>
                             </Avatar>
                           </div>
                           <div className="flex-grow min-w-0">
                             <p className="text-sm sm:text-base font-medium text-gray-900 dark:text-white truncate">
-                              {appointment.patient}
+                              {appointment.patient.name}
                             </p>
                             <div className="flex items-center space-x-2">
                               <Clock className="h-4 w-4 text-gray-400" />
                               <p className="text-sm text-gray-500 dark:text-gray-400">
-                                {appointment.time}
+                                {appointment.startTime}
                               </p>
                             </div>
-                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                              {appointment.reason}
-                            </p>
                           </div>
                         </div>
                         <div className="flex items-center space-x-2">
@@ -223,9 +213,11 @@ export default function DoctorHomepage() {
                           >
                             {appointment.status}
                           </span>
-                          {getAppointmentTypeIcon(appointment.type)}
+                          {getAppointmentTypeIcon(appointment.status)}
                           <Button
-                            onClick={handleCreatePrescription}
+                            onClick={() =>
+                              handleCreatePrescription(appointment.id)
+                            }
                             variant="default"
                             size="sm"
                             className="bg-blue-500 hover:bg-blue-600 text-white"

@@ -134,7 +134,7 @@ export default function Booking() {
                   onClick={() => handleSlotSelect(slot)}
                 >
                   <Clock className="mr-2 h-4 w-4" />
-                  {moment(slot.startTime).format("hh:mm A")}
+                  {moment(slot.startTime).utc().format("hh:mm A")}
                 </Button>
               ))}
             </div>
@@ -150,7 +150,7 @@ export default function Booking() {
             {selectedDate && selectedSlot && (
               <>
                 Selected: {format(selectedDate, "MMMM d, yyyy")} at{" "}
-                {moment(selectedSlot.startTime).format("hh:mm A")}
+                {moment(selectedSlot.startTime).utc().format("hh:mm A")}
               </>
             )}
           </div>

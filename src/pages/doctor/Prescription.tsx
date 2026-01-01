@@ -14,9 +14,11 @@ import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { Button } from "../../components/ui/button";
 import { Alert } from "../../components/ui/alert";
-import { ArrowLeft, MicIcon, MicOffIcon } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { ArrowLeft, LoaderCircleIcon, MicIcon, MicOffIcon } from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
+import api from "@/api";
+import { DoctorAppointment } from "@/store/appointment.doctor.store";
 
 const invoices = [
   {
@@ -43,7 +45,11 @@ function ProcessPrescription() {
   const navigate = useNavigate();
   const [toggleMic, setToggleMic] = useState(false);
   const [isListening, setIsListening] = useState(false);
-  const recognitionRef = useRef(null);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const [appointment, setAppointment] = useState<DoctorAppointment | null>(
+    null
+  );
+  const { id: appointmentId } = useParams();
 
   useEffect(() => {
     if (
@@ -72,6 +78,9 @@ function ProcessPrescription() {
 
   const toggleListening = () => {
     setToggleMic(!toggleMic);
+    if (!recognitionRef.current) {
+      return;
+    }
 
     if (isListening) {
       recognitionRef.current.stop();
@@ -81,12 +90,27 @@ function ProcessPrescription() {
     setIsListening(!isListening);
   };
 
+  useEffect(() => {
+    if (!appointmentId) navigate("/doctor/dashboard");
+    (async () => {
+      const { data: appointmentData } = await api.get(
+        `/appointment/${appointmentId}`
+      );
+      console.log(appointmentData.data);
+      setAppointment(appointmentData.data);
+    })();
+  }, []);
+
   function today() {
     return new Intl.DateTimeFormat("en-US", {
       year: "numeric",
       month: "short",
       day: "2-digit",
     }).format(new Date());
+  }
+
+  if (!appointment) {
+    return <LoaderCircleIcon />;
   }
   return (
     <>
@@ -97,9 +121,13 @@ function ProcessPrescription() {
         </Button>
         <div className="doctor flex justify-between">
           <div>
-            <h4 className="my-2 text-2xl text-blue-900 font-bold">Dr. Jon</h4>
-            <div className="text-blue-800 font-bold">General</div>
-            <div className="text-blue-600">9123132122</div>
+            <h4 className="my-2 text-2xl text-blue-900 font-bold">
+              Dr. {appointment.doctor.name}
+            </h4>
+            <div className="text-blue-800 font-bold">
+              {appointment.doctor.specialization}
+            </div>
+            <div className="text-blue-600">{appointment.doctor.phone}</div>
           </div>
           <div>
             <img className="h-[100px] w-[200px]" src={logo} alt="logo" />
@@ -107,9 +135,9 @@ function ProcessPrescription() {
         </div>
         <div className="patient flex my-4 justify-between">
           <div>
-            <div>Patient: Ram</div>
-            <div>Age: 24</div>
-            <div>Phone: 9123132122</div>
+            <div>Patient: {appointment.patient.name}</div>
+            <div>Age: {appointment.patient.age}</div>
+            <div>Phone: {appointment.patient.phone}</div>
           </div>
           <div className="text-lg">Date: {today()}</div>
           <Button

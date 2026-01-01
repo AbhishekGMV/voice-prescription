@@ -4,6 +4,14 @@ export type DoctorAppointment = {
   id: string;
   patient: {
     name: string;
+    id: string;
+    age: number;
+    phone: string;
+  };
+  doctor: {
+    name: string;
+    specialization: string;
+    phone: string;
   };
   startTime: string;
   status: string;
@@ -12,7 +20,7 @@ export type DoctorAppointment = {
 
 type AppointmentStore = {
   loading: boolean;
-  appointments: DoctorAppointment[] | null;
+  appointments: DoctorAppointment[];
 };
 
 type Action = {
@@ -22,7 +30,7 @@ type Action = {
 
 export const useDoctorAppointmentStore = create<AppointmentStore & Action>(
   (set) => ({
-    appointments: null,
+    appointments: [],
     loading: false,
     setAppointments: (appointments: DoctorAppointment[]) =>
       set(() => ({ appointments })),
