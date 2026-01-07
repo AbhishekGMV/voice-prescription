@@ -12,7 +12,7 @@ export const appointmentColumns: ColumnDef<DoctorAppointment>[] = [
         year: "numeric",
         month: "short",
         day: "2-digit",
-      }).format(new Date(params.row.original.slot.startTime));
+      }).format(new Date(params.row.original.startTime));
 
       return date;
     },

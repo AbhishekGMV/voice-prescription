@@ -6,6 +6,7 @@ declare global {
     interimResults: boolean;
     lang: string;
     onresult: (event: SpeechRecognitionEvent) => void;
+    onend: (event: SpeechRecognitionEvent) => void;
     onerror: (event: any) => void;
     start(): void;
     stop(): void;
