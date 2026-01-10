@@ -41,9 +41,13 @@ export function DoctorLogin() {
   async function onSubmit({ user }: z.infer<typeof formSchema>) {
     doctorStore.setLoading(true);
     try {
-      const { data } = await api.post("/doctor/login", {
-        user,
-      });
+      const { data } = await api.post(
+        "/doctor/login",
+        {
+          user,
+        },
+        { withCredentials: true }
+      );
 
       if (data.data && data.data.token) {
         doctorStore.setLoading(false);
