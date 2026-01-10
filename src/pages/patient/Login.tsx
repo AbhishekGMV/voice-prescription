@@ -45,9 +45,13 @@ export function PatientLogin() {
   async function onSubmit({ user }: z.infer<typeof formSchema>) {
     patientStore.setLoading(true);
     try {
-      const { data } = await api.post("/patient/login", {
-        user,
-      });
+      const { data } = await api.post(
+        "/patient/login",
+        {
+          user,
+        },
+        { withCredentials: true }
+      );
       if (data.data && data.data.token) {
         patientStore.setLoading(false);
         return navigate("/patient/dashboard");
